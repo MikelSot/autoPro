@@ -24,6 +24,6 @@ type Employee struct {
 	BossID        *uint
 	Team          []Employee `gorm:"foreignKey:BossID" json:"boss_id"`
 	RoleID        uint8      `json:"role_id"`
+	Appointments  []Appointment
 	TimeModel
 }
-

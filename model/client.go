@@ -16,5 +16,6 @@ type Client struct {
 	OrderAttention string `gorm:"type:char(2);default:0; not null" json:"order_attention"`
 	Uri            string `gorm:"uniqueIndex; type:varchar(250)" json:"uri"`
 	RoleID         uint8  `json:"role_id"`
+	Appointments   []Appointment
 	TimeModel
 }
