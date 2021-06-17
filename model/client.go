@@ -15,6 +15,6 @@ type Client struct {
 	State          string `gorm:"type:varchar(25)" json:"state"`
 	OrderAttention string `gorm:"type:char(2)" json:"order_attention"`
 	Uri            string `gorm:"type:varchar(250)" json:"uri"`
-	RoleID         uint8  `gorm:"type:varchar(250)" json:"role_id"`
+	RoleID         uint8  `json:"role_id"`
 	TimeModel
 }
