@@ -5,6 +5,7 @@ type Workshop struct {
 	Address string `gorm:"type:varchar(250) ; not null" json:"address"`
 	Uri     string `gorm:"uniqueIndex; type:varchar(250)" json:"uri"`
 	Services []Service
+	Products []Product
 	TimeModel
 }
 
