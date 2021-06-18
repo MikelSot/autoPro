@@ -15,10 +15,11 @@ type Client struct {
 	State            string `gorm:"type:varchar(25); not null" json:"state"`
 	OrderAttention   string `gorm:"type:char(2);default:0; not null" json:"order_attention"`
 	Uri              string `gorm:"uniqueIndex; type:varchar(250)" json:"uri"`
-	RoleID           uint8  `json:"role_id"`
+	RoleID           uint8  `gorm:"default:2" json:"role_id"`
 	Appointments     []Appointment
 	TechnicalReviews []TechnicalReview
 	Blogs            []Blog
 	Comments         []Comment
+	Invoices         []Invoice
 	TimeModel
 }
