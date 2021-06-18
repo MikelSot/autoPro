@@ -5,7 +5,6 @@ package main
 //	"github.com/labstack/echo/v4"
 //)
 
-func main()  {
+func main() {
 
-	
 }

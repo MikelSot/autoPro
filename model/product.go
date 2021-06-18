@@ -15,5 +15,6 @@ type Product struct {
 	Description string  `gorm:"type:varchar(350); default:''; not null" json:"description"`
 	CategoryID  uint8   `json:"category_id"`
 	WorkshopID  uint8   `json:"workshop_id"`
+	Comments    []Comment
 	TimeModel
 }

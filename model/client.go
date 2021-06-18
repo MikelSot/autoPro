@@ -18,5 +18,7 @@ type Client struct {
 	RoleID           uint8  `json:"role_id"`
 	Appointments     []Appointment
 	TechnicalReviews []TechnicalReview
+	Blogs            []Blog
+	Comments         []Comment
 	TimeModel
 }

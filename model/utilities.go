@@ -11,8 +11,8 @@ type TimeModel struct {
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
 }
 
-type FirstDataModel struct{
-	ID      uint8  `gorm:"primaryKey" json:"id"`
-	Name    string `gorm:"uniqueIndex; type:varchar(50) ; not null" json:"name"`
-	Active  bool   `gorm:"default:true; not null" json:"active"`
+type FirstDataModel struct {
+	ID     uint8  `gorm:"primaryKey" json:"id"`
+	Name   string `gorm:"uniqueIndex; type:varchar(50) ; not null" json:"name"`
+	Active bool   `gorm:"default:true; not null" json:"active"`
 }
