@@ -23,3 +23,6 @@ type Client struct {
 	Invoices         []Invoice
 	TimeModel
 }
+
+type Clients []*Client
+

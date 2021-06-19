@@ -9,4 +9,5 @@ import "github.com/MikelSot/autoPro/database"
 
 func main() {
 	database.Migration()
+
 }
