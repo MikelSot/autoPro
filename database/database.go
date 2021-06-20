@@ -29,11 +29,6 @@ func connectionDB() {
 }
 
 
-// DB returna una unica instancia de la conexion a la base de datos
-func DB() *gorm.DB {
-	return db
-}
-
 // Migration crea las tablas y ademas ingresa datos
 func Migration() error  {
 	err,_ :=migrationAndInsert()
@@ -42,5 +37,10 @@ func Migration() error  {
 		return errors.New("Error al crear las tablas o al ingresar datos a las tablas")
 	}
 	return nil
+}
+
+// DB returna una unica instancia de la conexion a la base de datos
+func DB() *gorm.DB {
+	return db
 }
 

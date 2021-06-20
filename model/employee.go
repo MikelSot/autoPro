@@ -9,7 +9,7 @@ type Employee struct {
 	Email         string    `gorm:"uniqueIndex; type:varchar(255); not null" json:"email"`
 	Password      string    `gorm:"type:varchar(255); not null" json:"password"`
 	RememberToken string    `gorm:"type:varchar(250)" json:"remember_token"`
-	Dni           string    `gorm:"uniqueIndex; type:char(8)" json:"dni"`
+	Dni           string    `gorm:"type:char(8)" json:"dni"`
 	BirthDate     time.Time `json:"birthdate"`
 	Phone         string    `gorm:"type:varchar(20); default:''" json:"phone"`
 	Picture       string    `gorm:"type:varchar(250)" json:"picture"`

@@ -8,7 +8,7 @@ type Blog struct {
 	Synthesis  string `gorm:"type:varchar(350);default:''" json:"synthesis"`
 	Content    string `gorm:"not null" json:"content"`
 	time       string `gorm:"type:varchar(30)" json:"time"`
-	Uri        string `gorm:"uniqueIndex; type:varchar(250)" json:"uri"`
+	Uri        string `gorm:"type:varchar(250)" json:"uri"`
 	EmployeeID uint   `json:"employee_id"`
 	ClientID   uint   `json:"client_id"`
 	CategoryID uint8  `json:"category_id"`
