@@ -16,3 +16,5 @@ type Appointment struct {
 	EmployeeID       uint      `gorm:"default:null" json:"employee_id"`
 	TimeModel
 }
+
+type Appointments []*Appointment
