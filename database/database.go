@@ -20,6 +20,15 @@ const (
 )
 
 
+// IQueryExists esta interface tiene metodos para validar si ya existe determinado atributo.
+type IQueryExists interface {
+	QueryEmailExists(email string) (bool, error)
+	QueryDniExists(dni string) (bool, error)
+	QueryUriExists(uri string) (bool, error)
+}
+
+
+
 // connectionDB conexion a la base de datos, singleton
 func connectionDB() {
 	once.Do(func() {

@@ -29,3 +29,5 @@ type Employee struct {
 	Invoices      []Invoice
 	TimeModel
 }
+
+type Employees []*Employee

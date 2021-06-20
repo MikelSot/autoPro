@@ -2,7 +2,6 @@ package database
 
 import (
 	"errors"
-	"fmt"
 	"github.com/MikelSot/autoPro/model"
 )
 
@@ -18,99 +17,82 @@ type IClientCRUD interface {
 	DeletePermanent(ID uint) error
 }
 
-// IClient
-type IClientQuery interface {
-	QueryEmailExists(email string) (bool, error)
-	QueryDniExists(dni string) (bool, error)
-	//QueryAllAppointment(Num int) (*model.Appointments, error)
-	//QueryAllProduct(Num int) (*model.Products, error)
-	//QueryOrderAttencionAvailable() ([]string, error)
-}
 
 
-// esta estruvtura ira en el handler
-type ClientIN struct {
-	iclientCrud IClientCRUD
-	iclientQuery IClientQuery
-}
-
-
-// este contructor tambien
-func NewClienteIN(iqcrud IClientCRUD, iquery IClientQuery )  ClientIN{
-	return ClientIN{
-		iclientCrud: iqcrud,
-		iclientQuery: iquery,
-	}
-}
+//// esta estruvtura ira en el handler
+//type ClientIN struct {
+//	iclientCrud IClientCRUD
+//	iclientQuery IQueryExists
+//}
+//
+//
+//// este contructor tambien
+//func NewClienteIN(iqcrud IClientCRUD, iexists IQueryExists )  ClientIN{
+//	return ClientIN{
+//		iclientCrud: iqcrud,
+//		iclientQuery: iexists,
+//	}
+//}
 
 
 // ClientDAO estructura para hacer referencia a nuestro modelo
-type ClientDAO struct {
+type ClientDao struct {
 	clientDao model.Client
 }
 
 
 // NewClient constructor de nuestra estructura, retorna una instancia de  esta
-func NewClient() ClientDAO {
-	return ClientDAO{}
+func NewClientDao() ClientDao {
+	return ClientDao{}
 }
 
 
-func (c *ClientDAO) Create(client *model.Client) error {
-	values := DB().Create(&client)
-	fmt.Println("CREAR CLIENTE MENSAJE --> ", values)
+func (c *ClientDao) Create(client *model.Client) error {
+	DB().Create(&client)
 	return nil
 }
 
 
-func (c *ClientDAO) Update(ID uint, client *model.Client) error {
+func (c *ClientDao) Update(ID uint, client *model.Client) error {
 	clientID := model.Client{}
 	clientID.ID = ID
-	values := DB().Model(&clientID).Updates(client)
-	fmt.Println("ACTUALIZAR CLIENTE MENSAJE --> ", values)
+	DB().Model(&clientID).Updates(client)
 	return nil
 }
 
 
-func (c *ClientDAO) GetByID(ID uint) (*model.Client, error){
+func (c *ClientDao) GetByID(ID uint) (*model.Client, error){
 	client := model.Client{}
-	values := DB().First(&client, ID)
-	//DB().Select("id").First(&client, ID)
-	fmt.Println("CONSULTAR CLIENTE POR ID --> ", values)
-	fmt.Println("FILAS AFECTADAS POR ID --> ", values.RowsAffected)
-	fmt.Println("STATEMENT POR ID --> ", values.Statement)
+	DB().First(&client, ID)
 	return &client, nil
 }
 
-func (c *ClientDAO) GetAll(Num int) (*model.Clients, error) {
+func (c *ClientDao) GetAll(Num int) (*model.Clients, error) {
 	clients := model.Clients{}
-	values := DB().Limit(Num).Find(&clients)
-	fmt.Println("CONSULTAR A TODOS LOS CLIENTES --> ", values)
+	DB().Limit(Num).Find(&clients)
 	return &clients, nil
 }
 
 
 // DeleteSoft borrado sueve, no elimina ese registro como tal de la tabla simplemente le cambia de atributo
-func (c *ClientDAO) DeleteSoft(ID uint) error{
+func (c *ClientDao) DeleteSoft(ID uint) error{
 	client := model.Client{}
 	client.ID = ID
-	values := DB().Delete(&client)
-	fmt.Println("BORRADO SUAVE --> ", values)
+	DB().Delete(&client)
 	return nil
 }
 
 
 // DeletePermanent  borrado permanente, borra por completo de la tabla ese registro
-func (c *ClientDAO) DeletePermanent(ID uint) error{
+func (c *ClientDao) DeletePermanent(ID uint) error{
 	client := model.Client{}
 	client.ID = ID
-	values := DB().Unscoped().Delete(&client)
-	fmt.Println("BORRADO PERMANENTE --> ", values)
+	DB().Unscoped().Delete(&client)
 	return nil
 }
 
-func (c *ClientDAO) QueryEmailExists(email string) (bool, error){
-	const  ExistsEmail = "Este Email ya existe"
+func (c *ClientDao) QueryEmailExists(email string) (bool, error){
+	const  ExistsEmail = "Este Email ya existe USUARIO"
 	client := model.Client{}
 	values := DB().Select("Email").Find(&client, "Email = ?", email)
 	if values.RowsAffected != ZeroRowsAffected {
@@ -119,14 +101,24 @@ func (c *ClientDAO) QueryEmailExists(email string) (bool, error){
 	return false,nil
 }
 
-func (c *ClientDAO) QueryDniExists(dni string) (bool, error) {
-	const  ExistsDni = "El DNI ya existe"
+func (c *ClientDao) QueryDniExists(dni string) (bool, error) {
+	const  ExistsDni = "El DNI ya existe USUARIO"
 	client := model.Client{}
 	values := DB().Select("Dni").Find(&client, "Dni = ?", dni)
 	if values.RowsAffected != ZeroRowsAffected {
 		return true, errors.New(ExistsDni)
 	}
 	return false, nil
+}
+
+func (c *ClientDao)	QueryUriExists(uri string) (bool, error) {
+	const  ExistsUri = "El DNI ya existe USUARIO"
+	client := model.Client{}
+	values := DB().Select("Uri").Find(&client, "Uri = ?", uri)
+	if values.RowsAffected != ZeroRowsAffected {
+		return true, errors.New(ExistsUri)
+	}
+	return false,nil
 }
 
 
@@ -140,8 +132,6 @@ func (c *ClientDAO) QueryDniExists(dni string) (bool, error) {
 
 
 
-
-//
 //func Crear()  {
 //
 //	mikel := NewClient()
@@ -149,6 +139,6 @@ func (c *ClientDAO) QueryDniExists(dni string) (bool, error) {
 //
 //	value,err := rearME.iclientQuery.QueryEmailExists("ctmr")
 //	if value {
-//		fmt.Println("ya esiste el imeal ->", err)
+//		fmt.Printf("ya esiste el imeal -> %v", err)
 //	}
 //}
