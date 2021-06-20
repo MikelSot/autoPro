@@ -1,6 +1,8 @@
 package main
 
-import "github.com/MikelSot/autoPro/database"
+import (
+	"github.com/MikelSot/autoPro/database"
+)
 
 //import (
 //	"net/http"
@@ -8,6 +10,11 @@ import "github.com/MikelSot/autoPro/database"
 //)
 
 func main() {
-	database.Migration()
+
+	if flag := database.FlagMi(); flag != false{
+		database.Migration()
+	}
+
+
 
 }
