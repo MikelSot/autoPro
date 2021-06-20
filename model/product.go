@@ -19,3 +19,5 @@ type Product struct {
 	InvoiceItems []InvoiceItem
 	TimeModel
 }
+
+type Products []*Product

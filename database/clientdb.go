@@ -11,20 +11,20 @@ type IClient interface {
 }
 
 
-type ClientDAO struct {
-	ClientDao model.Client
-}
-
-func NewClient(email string, password string) *ClientDAO {
-	return &ClientDAO{
-		ClientDao:
-			model.Client{
-				Email: email,
-				Password: password,
-			},
-	}
-}
-
-func (c *ClientDAO) Create(client *model.Client)  {
-	DB().Create(&client)
-}
+//type ClientDAO struct {
+//	ClientDao model.Client
+//}
+//
+//func NewClient(email string, password string) *ClientDAO {
+//	return &ClientDAO{
+//		ClientDao:
+//			model.Client{
+//				Email: email,
+//				Password: password,
+//			},
+//	}
+//}
+//
+//func (c *ClientDAO) Create(client *model.Client)  {
+//	DB().Create(&client)
+//}

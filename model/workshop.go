@@ -6,7 +6,6 @@ type Workshop struct {
 	Active   bool   `gorm:"default:true; not null" json:"active"`
 	Address  string `gorm:"type:varchar(250) ; not null" json:"address"`
 	Uri      string `gorm:"uniqueIndex; type:varchar(250)" json:"uri"`
-	Services []Service
 	Products []Product
 	Invoices []Invoice
 	TimeModel
