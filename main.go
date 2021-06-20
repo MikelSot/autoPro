@@ -10,6 +10,6 @@ import "github.com/MikelSot/autoPro/database"
 func main() {
 	database.Migration()
 
-	database.Crear()
+	//database.Crear()
 }
 

@@ -13,7 +13,6 @@ type Client struct {
 	Picture          string `gorm:"type:varchar(250)" json:"picture"`
 	Address          string `gorm:"type:varchar(250); default:''" json:"address"`
 	State            string `gorm:"type:varchar(25); not null" json:"state"`
-	OrderAttention   string `gorm:"type:char(2);default:0; not null" json:"order_attention"`
 	Uri              string `gorm:"type:varchar(250)" json:"uri"`
 	RoleID           uint8  `gorm:"default:2" json:"role_id"`
 	Appointments     []Appointment

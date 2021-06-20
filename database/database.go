@@ -12,7 +12,13 @@ import (
 var (
 	db   *gorm.DB
 	once sync.Once
+
 )
+
+const (
+	ZeroRowsAffected = 0
+)
+
 
 // connectionDB conexion a la base de datos, singleton
 func connectionDB() {
