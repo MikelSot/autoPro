@@ -12,7 +12,7 @@ type IClientCRUD interface {
 	Create(client *model.Client) error
 	Update(ID uint, client *model.Client) error
 	GetByID(ID uint) (*model.Client, error)
-	GetAll(Num int) (*model.Clients, error)
+	GetAll(max int) (*model.Clients, error)
 	DeleteSoft(ID uint) error
 	DeletePermanent(ID uint) error
 }
@@ -67,9 +67,12 @@ func (c *ClientDao) GetByID(ID uint) (*model.Client, error){
 	return &client, nil
 }
 
-func (c *ClientDao) GetAll(Num int) (*model.Clients, error) {
+func (c *ClientDao) GetAll(max int) (*model.Clients, error) {
+	if max == Zero {
+		max = 10
+	}
 	clients := model.Clients{}
-	DB().Limit(Num).Find(&clients)
+	DB().Limit(max).Find(&clients)
 	return &clients, nil
 }
 
@@ -94,7 +97,7 @@ func (c *ClientDao) DeletePermanent(ID uint) error{
 func (c *ClientDao) QueryEmailExists(email string) (bool, error){
 	const  ExistsEmail = "Este Email ya existe USUARIO"
 	client := model.Client{}
-	values := DB().Select("Email").Find(&client, "Email = ?", email)
+	values := DB().Select("Email").Find(&client, "email = ?", email)
 	if values.RowsAffected != ZeroRowsAffected {
 		return true, errors.New(ExistsEmail)
 	}
@@ -104,7 +107,7 @@ func (c *ClientDao) QueryEmailExists(email string) (bool, error){
 func (c *ClientDao) QueryDniExists(dni string) (bool, error) {
 	const  ExistsDni = "El DNI ya existe USUARIO"
 	client := model.Client{}
-	values := DB().Select("Dni").Find(&client, "Dni = ?", dni)
+	values := DB().Select("Dni").Find(&client, "dni = ?", dni)
 	if values.RowsAffected != ZeroRowsAffected {
 		return true, errors.New(ExistsDni)
 	}
@@ -114,7 +117,7 @@ func (c *ClientDao) QueryDniExists(dni string) (bool, error) {
 func (c *ClientDao)	QueryUriExists(uri string) (bool, error) {
 	const  ExistsUri = "El DNI ya existe USUARIO"
 	client := model.Client{}
-	values := DB().Select("Uri").Find(&client, "Uri = ?", uri)
+	values := DB().Select("Uri").Find(&client, "uri = ?", uri)
 	if values.RowsAffected != ZeroRowsAffected {
 		return true, errors.New(ExistsUri)
 	}

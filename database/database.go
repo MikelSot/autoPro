@@ -17,6 +17,7 @@ var (
 
 const (
 	ZeroRowsAffected = 0
+	Zero = 0
 )
 
 

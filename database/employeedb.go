@@ -9,11 +9,13 @@ type IEmployeeCRUD interface {
 	Create(employee *model.Employee) error
 	Update(ID uint, employee *model.Employee) error
 	GetByID(ID uint) (*model.Employee, error)
-	GetAll(Num int) (*model.Employees, error)
+	GetAll(max int) (*model.Employees, error)
 	DeleteSoft(ID uint) error
 	DeletePermanent(ID uint) error
 }
 
+// todas las citas en que el usuario intervido (ir a recojer su auto)
+//
 
 type EmployeeDao struct {
 	employeeDao model.Employee
@@ -41,9 +43,12 @@ func (e *EmployeeDao) GetByID(ID uint) (*model.Employee, error) {
 	return &employee, nil
 }
 
-func (e *EmployeeDao) GetAll(Num int) (*model.Employees, error) {
+func (e *EmployeeDao) GetAll(max int) (*model.Employees, error) {
+	if max == Zero {
+		max = 10
+	}
 	employees := model.Employees{}
-	DB().Limit(Num).First(&employees)
+	DB().Limit(max).First(&employees)
 	return &employees, nil
 }
 
@@ -64,7 +69,7 @@ func (e *EmployeeDao) DeletePermanent(ID uint) error {
 func (e *EmployeeDao) QueryEmailExists(email string) (bool, error) {
 	const  ExistsEmail = "Este Email ya existe EMPLEADO"
 	employee := model.Employee{}
-	values := DB().Select("Email").Find(&employee, "Email = ?", email)
+	values := DB().Select("Email").Find(&employee, "email = ?", email)
 	if values.RowsAffected != ZeroRowsAffected {
 		return true, errors.New(ExistsEmail)
 	}
@@ -74,7 +79,7 @@ func (e *EmployeeDao) QueryEmailExists(email string) (bool, error) {
 func (e *EmployeeDao) QueryDniExists(dni string) (bool, error) {
 	const  ExistsDni = "El DNI ya existe EMPLEADO"
 	employee := model.Employee{}
-	values := DB().Select("Email").Find(&employee, "Dni = ?", dni)
+	values := DB().Select("Email").Find(&employee, "dni = ?", dni)
 	if values.RowsAffected != ZeroRowsAffected {
 		return true, errors.New(ExistsDni)
 	}
@@ -84,7 +89,7 @@ func (e *EmployeeDao) QueryDniExists(dni string) (bool, error) {
 func (e *EmployeeDao) QueryUriExists(uri string) (bool, error) {
 	const  ExistsUri = "El DNI ya existe EMPLEADO"
 	employee := model.Employee{}
-	values := DB().Select("Uri").Find(&employee, "Uri = ?", uri)
+	values := DB().Select("Uri").Find(&employee, "uri = ?", uri)
 	if values.RowsAffected != ZeroRowsAffected {
 		return true, errors.New(ExistsUri)
 	}

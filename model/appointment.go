@@ -8,8 +8,7 @@ type Appointment struct {
 	Service          string    `gorm:"type:varchar(100); default:''; not null" json:"service"`
 	Description      string    `gorm:"type:varchar(350); default:''" json:"description"`
 	DateHour         time.Time `gorm:"not null" json:"date_hour"`
-	FinalAppointment time.Time `json:"final_appointment"`
-	OrderAttention   string    `gorm:"type:char(2);default:0; not null" json:"order_attention"`
+	OrderAttention   string    `gorm:"type:char(2); default:'0''; not null" json:"order_attention"`
 	State            string    `gorm:"type:varchar(30); default:'espera'" json:"state"`
 	VehicleType      string    `gorm:"type:varchar(60); default:''; not null" json:"vehicle_type"`
 	PickUp           bool      `gorm:"default:false; not null" json:"pick_up"`
@@ -19,3 +18,4 @@ type Appointment struct {
 }
 
 type Appointments []*Appointment
+
