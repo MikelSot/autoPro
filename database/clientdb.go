@@ -68,8 +68,8 @@ func (c *ClientDao) GetByID(ID uint) (*model.Client, error){
 }
 
 func (c *ClientDao) GetAll(max int) (*model.Clients, error) {
-	if max == Zero {
-		max = 10
+	if  max < MaxGetAll{
+		max = MaxGetAll
 	}
 	clients := model.Clients{}
 	DB().Limit(max).Find(&clients)

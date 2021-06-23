@@ -62,8 +62,8 @@ func (a *AppointmentDao) Update(ID uint, appointment *model.Appointment) error {
 }
 
 func (a *AppointmentDao) GetAll(max int) (*model.Appointments, error) {
-	if max == Zero {
-		max = 10
+	if  max < MaxGetAll{
+		max = MaxGetAll
 	}
 	appointments := model.Appointments{}
 	DB().Limit(max).Find(&appointments)
@@ -120,8 +120,8 @@ func signValid(busy map[string]string)  map[int]string{
 
 
 func (a *AppointmentDao) AllAppointmentClient(ID uint, max int) (*model.Appointments, error) {
-	if max == Zero {
-		max = 10
+	if  max < MaxGetAll{
+		max = MaxGetAll
 	}
 	appointments := model.Appointments{}
 	DB().Limit(max).Select(

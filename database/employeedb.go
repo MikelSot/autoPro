@@ -44,8 +44,8 @@ func (e *EmployeeDao) GetByID(ID uint) (*model.Employee, error) {
 }
 
 func (e *EmployeeDao) GetAll(max int) (*model.Employees, error) {
-	if max == Zero {
-		max = 10
+	if  max < MaxGetAll {
+		max = MaxGetAll
 	}
 	employees := model.Employees{}
 	DB().Limit(max).First(&employees)

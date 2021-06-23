@@ -17,7 +17,8 @@ var (
 
 const (
 	ZeroRowsAffected = 0
-	Zero = 0
+	Zero = 0 // x
+	MaxGetAll = 10
 )
 
 
