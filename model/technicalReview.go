@@ -15,3 +15,5 @@ type TechnicalReview struct {
 	ClientID          uint   `gorm:"not null" json:"client_id"`
 	TimeModel
 }
+
+type TechnicalReviews []*TechnicalReview

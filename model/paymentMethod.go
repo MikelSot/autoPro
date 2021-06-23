@@ -7,3 +7,5 @@ type PaymentMethod struct {
 	Invoices []Invoice
 	TimeModel
 }
+
+type PaymentMethods []*PaymentMethod
