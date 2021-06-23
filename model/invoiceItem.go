@@ -8,3 +8,5 @@ type InvoiceItem struct {
 	ServiceID uint8 `json:"service_id"`
 	TimeModel
 }
+
+type InvoiceItems []*InvoiceItem

@@ -15,3 +15,5 @@ type Blog struct {
 	Comments   []Comment
 	TimeModel
 }
+
+type Blogs []*Blog

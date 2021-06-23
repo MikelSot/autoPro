@@ -65,5 +65,10 @@ func (t TechnicalReviewDao) DeletePermanent(ID uint) error {
 }
 
 func (t TechnicalReviewDao) AllreviewClient(ID uint, max int) (*model.TechnicalReviews, error) {
-	panic("implement me")
+	if  max < MaxGetAll{
+		max = MaxGetAll
+	}
+	reviews := model.TechnicalReviews{}
+	DB().Limit(max).Find(&reviews, "client_id = ?", ID)
+	return &reviews, nil
 }

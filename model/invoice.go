@@ -14,3 +14,5 @@ type Invoice struct {
 	InvoiceItems    []InvoiceItem
 	TimeModel
 }
+
+type Invoices []*Invoice

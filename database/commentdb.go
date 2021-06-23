@@ -8,6 +8,10 @@ type ICommentCRUD interface {
 	DeleteSoft(ID uint) error
 }
 
+type IQueryComment interface {
+	// este inner joing clientes para que nos traiga su nombre del usuario
+	AllCommentBlog(ID, max int) (*model.Comments, error)
+}
 
 type CommentDao struct {
 	commentDao model.Comment

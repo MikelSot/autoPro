@@ -9,3 +9,5 @@ type Comment struct {
 	BlogID        uint   `json:"blog_id"`
 	TimeModel
 }
+
+type Comments []*Comment
