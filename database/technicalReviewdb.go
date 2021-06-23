@@ -11,6 +11,10 @@ type ITechnicalReviewCRUD interface {
 	DeletePermanent(ID uint) error
 }
 
+type IQueryReview interface {
+	AllreviewClient(ID uint, max int) (*model.TechnicalReviews, error)
+}
+
 type TechnicalReviewDao struct {
 	technicalReviewDao model.TechnicalReview
 }
@@ -58,4 +62,8 @@ func (t TechnicalReviewDao) DeletePermanent(ID uint) error {
 	review.ID = ID
 	DB().Unscoped().Delete(&review)
 	return nil
+}
+
+func (t TechnicalReviewDao) AllreviewClient(ID uint, max int) (*model.TechnicalReviews, error) {
+	panic("implement me")
 }
