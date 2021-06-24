@@ -95,7 +95,6 @@ func (a *AppointmentDao) AllOrderAttentionAvailable() (map[int]string, error) {
 	}
 
 	available:= signValid(ordersBusy)
-
 	return available, nil
 }
 

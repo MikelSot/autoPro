@@ -106,6 +106,7 @@ func (c *ClientDao) QueryEmailExists(email string) (bool, error){
 	const  ExistsEmail = "Este Email ya existe USUARIO"
 	client := model.Client{}
 	values := DB().Select("Email").Find(&client, "email = ?", email)
+	//values := DB().Table("clients").Select("Email").Where("email = ?", email)
 	if values.RowsAffected != ZeroRowsAffected {
 		return true, errors.New(ExistsEmail)
 	}

@@ -1,6 +1,5 @@
 package model
 
-type Clients []*Client
 
 type Client struct {
 	ID               uint   `gorm:"primaryKey" json:"id"` // ,omitempty
@@ -24,3 +23,4 @@ type Client struct {
 	Invoices         []Invoice
 	TimeModel
 }
+type Clients []*Client

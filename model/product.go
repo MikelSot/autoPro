@@ -9,7 +9,7 @@ type Product struct {
 	Active       bool    `gorm:"default:false; not null" json:"active"`
 	Stock        uint    `gorm:"type:smallint; not null" json:"stock"`
 	UnitPrice    float32 `gorm:"type:real; not null" json:"unit_price"`
-	Uri          string  `gorm:"type:varchar(250)" json:"uri"`
+	Uri          string  `gorm:"type:varchar(250); default:products.name" json:"uri"`
 	Offer        bool    `gorm:"default:false; not null" json:"offer"`
 	Picture      string  `gorm:"type:varchar(250)" json:"picture"`
 	Description  string  `gorm:"type:varchar(350); default:''; not null" json:"description"`

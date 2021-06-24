@@ -69,6 +69,8 @@ func (p *ProductDao) AllProductsCategory(ID uint, max int) (model.Products, erro
 	if  max < MaxGetAll{
 		max = MaxGetAll
 	}
+
+	// usar su dto para guardar info retorno
 	products := model.Products{}
 	DB().Limit(max).Find(&products, "category_id = ?", ID)
 	return products, nil

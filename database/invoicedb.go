@@ -51,6 +51,7 @@ func (i InvoiceDao) AllInvoiceClient(ID, max int) (*model.Invoices, error) {
 	if  max < MaxGetAll{
 		max = MaxGetAll
 	}
+	// incoicecliet
 	invoices := model.Invoices{}
 	DB().Limit(max).Select(
 		"Ruc",
@@ -65,6 +66,8 @@ func (i InvoiceDao) AllInvoiceWorkshop(ID uint, max int) (*model.Invoices, error
 	if  max < MaxGetAll{
 		max = MaxGetAll
 	}
+	// incoiceworkshop
+
 	invoices := model.Invoices{}
 	DB().Limit(max).Select(
 		"Ruc",

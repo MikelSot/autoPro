@@ -6,7 +6,7 @@ type Service struct {
 	Active       bool       `gorm:"default:true; not null" json:"active"`
 	Description  string     `gorm:"type:varchar(350); default:''; not null" json:"description"`
 	Picture      string     `gorm:"type:varchar(250)" json:"picture"`
-	Uri          string     `gorm:"type:varchar(250)" json:"uri"`
+	Uri          string     `gorm:"type:varchar(250); default:services.name" json:"uri"`
 	Workshops    []Workshop `gorm:"many2many:service_workshops;" json:"workshops"` // muchos a muchos
 	InvoiceItems []InvoiceItem
 	TimeModel
