@@ -48,12 +48,20 @@ func NewClientDao() ClientDao {
 
 
 func (c *ClientDao) Create(client *model.Client) error {
+	var err error = errors.New("Ingresar el campo nombre o apellido")
+	if len(client.Name) < LenName || len(client.LastName) < LenName{
+		return err
+	}
 	DB().Create(&client)
 	return nil
 }
 
 
 func (c *ClientDao) Update(ID uint, client *model.Client) error {
+	var err error = errors.New("Ingresar el campo nombre o apellido")
+	if len(client.Name) < LenName || len(client.LastName) < LenName{
+		return err
+	}
 	clientID := model.Client{}
 	clientID.ID = ID
 	DB().Model(&clientID).Updates(client)

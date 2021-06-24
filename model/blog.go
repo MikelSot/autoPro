@@ -10,7 +10,6 @@ type Blog struct {
 	time       string `gorm:"type:varchar(30)" json:"time"`
 	Uri        string `gorm:"type:varchar(250)" json:"uri"`
 	EmployeeID uint   `json:"employee_id"`
-	ClientID   uint   `json:"client_id"`
 	CategoryID uint8  `json:"category_id"`
 	Comments   []Comment
 	TimeModel
