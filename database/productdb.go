@@ -1,6 +1,9 @@
 package database
 
-import "github.com/MikelSot/autoPro/model"
+import (
+	"github.com/MikelSot/autoPro/model"
+	"github.com/MikelSot/autoPro/model/dto"
+)
 
 type IProductCRUD interface {
 	Create( product *model.Product) error
@@ -12,8 +15,8 @@ type IProductCRUD interface {
 }
 
 type IQueryProduct interface {
-	AllProductsCategory(ID uint, max int) (model.Products, error)
-	AllProductsWorkshop(ID uint, max int) (model.Products, error)
+	AllProductsCategory(ID uint, max int) (dto.ProductClients, error)
+	AllProductsWorkshop(ID uint, max int) (dto.ProductClients, error)
 }
 
 type ProductDao struct {
@@ -65,22 +68,21 @@ func (p *ProductDao) DeletePermanent(ID uint) error {
 	return nil
 }
 
-func (p *ProductDao) AllProductsCategory(ID uint, max int) (model.Products, error) {
+func (p *ProductDao) AllProductsCategory(ID uint, max int) (dto.ProductClients, error) {
 	if  max < MaxGetAll{
 		max = MaxGetAll
 	}
 
-	// usar su dto para guardar info retorno
-	products := model.Products{}
-	DB().Limit(max).Find(&products, "category_id = ?", ID)
+	products := dto.ProductClients{}
+	DB().Table("products").Limit(max).Find( "category_id = ?", ID).Scan(&products)
 	return products, nil
 }
 
-func (p *ProductDao) AllProductsWorkshop(ID uint, max int) (model.Products, error) {
+func (p *ProductDao) AllProductsWorkshop(ID uint, max int) (dto.ProductClients, error) {
 	if  max < MaxGetAll{
 		max = MaxGetAll
 	}
-	products := model.Products{}
-	DB().Limit(max).Find(&products, "workshop_id = ?", ID)
+	products := dto.ProductClients{}
+	DB().Table("products").Limit(max).Find( "workshop_id = ?", ID).Scan(&products)
 	return products, nil
 }

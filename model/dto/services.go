@@ -8,15 +8,13 @@ type ServiceWorkshop struct {
 	Description string `json:"description"`
 	Picture     string `json:"picture"`
 	Uri         string `json:"uri"`
-	Workshops   uint8  `json:"workshops"`
+	WorkshopID  uint8  `json:"workshop_id"`
 }
-
 
 // mostrar info de workshop
 type WorkshopClients []*WorkshopClient
 type WorkshopClient struct {
-	Name     string `json:"name"`
-	Active   bool   `json:"active"`
-	Address  string `json:"address"`
+	Name    string `json:"name"`
+	Active  bool   `json:"active"`
+	Address string `json:"address"`
 }
-

@@ -1,6 +1,9 @@
 package database
 
-import "github.com/MikelSot/autoPro/model"
+import (
+	"github.com/MikelSot/autoPro/model"
+	"github.com/MikelSot/autoPro/model/dto"
+)
 
 type IInvoiceCRUD interface {
 	Create(invoice *model.Invoice) error
@@ -10,8 +13,8 @@ type IInvoiceCRUD interface {
 }
 
 type IQueryInvoice interface {
-	AllInvoiceClient(ID, max int) (*model.Invoices, error)
-	AllInvoiceWorkshop(ID uint, max int) (*model.Invoices, error)
+	AllInvoiceClient(ID, max int) (*dto.InvoiceClients, error)
+	AllInvoiceWorkshop(ID uint, max int) (*dto.InvoiceWorkshops, error)
 }
 
 type InvoiceDao struct {
@@ -47,35 +50,42 @@ func (i InvoiceDao) DeleteSoft(ID uint) error {
 	return nil
 }
 
-func (i InvoiceDao) AllInvoiceClient(ID, max int) (*model.Invoices, error) {
+func (i InvoiceDao) AllInvoiceClient(ID, max int) (*dto.InvoiceClients, error) {
 	if  max < MaxGetAll{
 		max = MaxGetAll
 	}
-	// incoicecliet
-	invoices := model.Invoices{}
-	DB().Limit(max).Select(
+
+	invoices := dto.InvoiceClients{}
+	DB().Table("invoices").Limit(max).Select(
 		"Ruc",
 		"Status",
 		"InvoiceDate",
-	).Find(&invoices, "client_id = ?", ID)
+	).Find("client_id = ?", ID).Scan(&invoices)
 
 	return &invoices, nil
 }
 
-func (i InvoiceDao) AllInvoiceWorkshop(ID uint, max int) (*model.Invoices, error) {
+func (i InvoiceDao) AllInvoiceWorkshop(ID uint, max int) (*dto.InvoiceWorkshops, error) {
 	if  max < MaxGetAll{
 		max = MaxGetAll
 	}
-	// incoiceworkshop
 
-	invoices := model.Invoices{}
-	DB().Limit(max).Select(
+	invoices := dto.InvoiceWorkshops{}
+	DB().Table("invoices").Limit(max).Select(
 		"Ruc",
 		"Status",
 		"InvoiceDate",
 		"EmployeeID",
 		"PaymentMethodID",
-	).Find(&invoices, "workshop_id = ?", ID)
+	).Find( "workshop_id = ?", ID).Scan(&invoices)
 
+	//invoices := model.Invoices{}
+	//DB().Limit(max).Select(
+	//	"Ruc",
+	//	"Status",
+	//	"InvoiceDate",
+	//	"EmployeeID",
+	//	"PaymentMethodID",
+	//).Find(&invoices, "workshop_id = ?", ID)
 	return &invoices, nil
 }

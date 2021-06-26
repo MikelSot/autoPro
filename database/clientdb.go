@@ -3,21 +3,24 @@ package database
 import (
 	"errors"
 	"github.com/MikelSot/autoPro/model"
+	"github.com/MikelSot/autoPro/model/dto"
 )
 
-
+var (
+	ErrSingIn = errors.New("error al registrar client")
+	ErrUpdate = errors.New("error al update los datos")
+	ErrEmail  = errors.New("error el email o contraseña")
+)
 
 // IClient interface de CRUD
 type IClientCRUD interface {
-	Create(client *model.Client) error
-	Update(ID uint, client *model.Client) error
+	Create(clientDot *dto.SignInClient) error
+	Update(ID uint, clientDot *dto.InsertClient) error
 	GetByID(ID uint) (*model.Client, error)
 	GetAll(max int) (*model.Clients, error)
 	DeleteSoft(ID uint) error
 	DeletePermanent(ID uint) error
 }
-
-
 
 //// esta estruvtura ira en el handler
 //type ClientIN struct {
@@ -34,33 +37,54 @@ type IClientCRUD interface {
 //	}
 //}
 
-
 // ClientDAO estructura para hacer referencia a nuestro modelo
 type ClientDao struct {
 	clientDao model.Client
 }
-
 
 // NewClient constructor de nuestra estructura, retorna una instancia de  esta
 func NewClientDao() ClientDao {
 	return ClientDao{}
 }
 
+func (c *ClientDao) Create(clientDot *dto.SignInClient) error {
+	if len(clientDot.Name) < LenName || len(clientDot.LastName) < LenName {
+		return ErrSingIn
+	}
 
-func (c *ClientDao) Create(client *model.Client) error {
-	var err error = errors.New("Ingresar el campo nombre o apellido")
-	if len(client.Name) < LenName || len(client.LastName) < LenName{
-		return err
+	if len(clientDot.Email) < LenName || len(clientDot.Password) < LenName {
+		return ErrEmail
+	}
+
+	client := model.Client{
+		Name:     clientDot.Name,
+		LastName: clientDot.LastName,
+		Email:    clientDot.Email,
+		Password: clientDot.Password,
 	}
 	DB().Create(&client)
 	return nil
 }
 
+func (c *ClientDao) Update(ID uint, clientDot *dto.InsertClient) error {
+	if len(clientDot.Name) < LenName || len(clientDot.LastName) < LenName {
+		return ErrUpdate
+	}
 
-func (c *ClientDao) Update(ID uint, client *model.Client) error {
-	var err error = errors.New("Ingresar el campo nombre o apellido")
-	if len(client.Name) < LenName || len(client.LastName) < LenName{
-		return err
+	if len(clientDot.Email) < LenName || len(clientDot.Password) < LenName {
+		return ErrEmail
+	}
+
+	client := model.Client{
+		Name:     clientDot.Name,
+		LastName: clientDot.LastName,
+		Email:    clientDot.Email,
+		Password: clientDot.Password,
+		Dni:      clientDot.Dni,
+		Ruc:      clientDot.Ruc,
+		Phone:    clientDot.Phone,
+		Picture:  clientDot.Picture,
+		Address:  clientDot.Address,
 	}
 	clientID := model.Client{}
 	clientID.ID = ID
@@ -68,15 +92,14 @@ func (c *ClientDao) Update(ID uint, client *model.Client) error {
 	return nil
 }
 
-
-func (c *ClientDao) GetByID(ID uint) (*model.Client, error){
+func (c *ClientDao) GetByID(ID uint) (*model.Client, error) {
 	client := model.Client{}
 	DB().First(&client, ID)
 	return &client, nil
 }
 
 func (c *ClientDao) GetAll(max int) (*model.Clients, error) {
-	if  max < MaxGetAll{
+	if max < MaxGetAll {
 		max = MaxGetAll
 	}
 	clients := model.Clients{}
@@ -84,37 +107,35 @@ func (c *ClientDao) GetAll(max int) (*model.Clients, error) {
 	return &clients, nil
 }
 
-
 // DeleteSoft borrado sueve, no elimina ese registro como tal de la tabla simplemente le cambia de atributo
-func (c *ClientDao) DeleteSoft(ID uint) error{
+func (c *ClientDao) DeleteSoft(ID uint) error {
 	client := model.Client{}
 	client.ID = ID
 	DB().Delete(&client)
 	return nil
 }
 
-
 // DeletePermanent  borrado permanente, borra por completo de la tabla ese registro
-func (c *ClientDao) DeletePermanent(ID uint) error{
+func (c *ClientDao) DeletePermanent(ID uint) error {
 	client := model.Client{}
 	client.ID = ID
 	DB().Unscoped().Delete(&client)
 	return nil
 }
 
-func (c *ClientDao) QueryEmailExists(email string) (bool, error){
-	const  ExistsEmail = "Este Email ya existe USUARIO"
+func (c *ClientDao) QueryEmailExists(email string) (bool, error) {
+	const ExistsEmail = "Este Email ya existe USUARIO"
 	client := model.Client{}
 	values := DB().Select("Email").Find(&client, "email = ?", email)
 	//values := DB().Table("clients").Select("Email").Where("email = ?", email)
 	if values.RowsAffected != ZeroRowsAffected {
 		return true, errors.New(ExistsEmail)
 	}
-	return false,nil
+	return false, nil
 }
 
 func (c *ClientDao) QueryDniExists(dni string) (bool, error) {
-	const  ExistsDni = "El DNI ya existe USUARIO"
+	const ExistsDni = "El DNI ya existe USUARIO"
 	client := model.Client{}
 	values := DB().Select("Dni").Find(&client, "dni = ?", dni)
 	if values.RowsAffected != ZeroRowsAffected {
@@ -123,26 +144,15 @@ func (c *ClientDao) QueryDniExists(dni string) (bool, error) {
 	return false, nil
 }
 
-func (c *ClientDao)	QueryUriExists(uri string) (bool, error) {
-	const  ExistsUri = "El DNI ya existe USUARIO"
+func (c *ClientDao) QueryUriExists(uri string) (bool, error) {
+	const ExistsUri = "El DNI ya existe USUARIO"
 	client := model.Client{}
 	values := DB().Select("Uri").Find(&client, "uri = ?", uri)
 	if values.RowsAffected != ZeroRowsAffected {
 		return true, errors.New(ExistsUri)
 	}
-	return false,nil
+	return false, nil
 }
-
-
-
-
-
-
-
-
-
-
-
 
 //func Crear()  {
 //

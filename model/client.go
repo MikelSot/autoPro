@@ -1,6 +1,5 @@
 package model
 
-
 type Client struct {
 	ID               uint   `gorm:"primaryKey" json:"id"` // ,omitempty
 	Name             string `gorm:"type:varchar(100); default:''; not null" json:"name"`
