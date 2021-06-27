@@ -7,8 +7,8 @@ import (
 
 // IClient interface de CRUD
 type IClientCRUD interface {
-	Create(client *model.Client) error
-	Update(ID uint, client *model.Client) error
+	Create(client *dto.SignInClient) error
+	Update(ID uint, client *dto.EditClient) error
 	GetByID(ID uint) (*model.Client, error)
 	GetAll(max int) (*model.Clients, error)
 	DeleteSoft(ID uint) error

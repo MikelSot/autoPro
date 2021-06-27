@@ -3,8 +3,14 @@ package database
 import (
 	"errors"
 	"github.com/MikelSot/autoPro/model"
+	"github.com/MikelSot/autoPro/model/dto"
 	"golang.org/x/crypto/bcrypt"
 	"log"
+	"strings"
+)
+
+const (
+	at = "@"
 )
 
 var (
@@ -26,12 +32,49 @@ func NewClientDao() ClientDao {
 	return ClientDao{}
 }
 
-func (c *ClientDao) Create(client *model.Client) error {
+func (c *ClientDao) Create(clientDto *dto.SignInClient) error {
+	existsEmail, _, _, _ := c.QueryEmailExists(clientDto.Email)
+	if existsEmail {
+		return ErrExistsEmail
+	}
+	url := at + strings.ToLower(clientDto.Name) + strings.ToLower(clientDto.LastName)
+	existsUri, _ := c.QueryUriExists(url)
+	if existsUri {
+		url = at + url
+	}
+	client := model.Client{
+		Name:     clientDto.Name,
+		LastName: clientDto.LastName,
+		Email:    clientDto.Email,
+		Password: Encrypt(clientDto.Password),
+		Uri:      url,
+	}
+
 	DB().Create(&client)
 	return nil
 }
 
-func (c *ClientDao) Update(ID uint, client *model.Client) error {
+func (c *ClientDao) Update(ID uint, clientDto *dto.EditClient) error {
+	existsEmail, _, _, _ := c.QueryEmailExists(clientDto.Email)
+	if existsEmail {
+		return ErrExistsEmail
+	}
+	existsDni, _ := c.QueryDniExists(clientDto.Dni)
+	if existsDni {
+		return ErrExistsDni
+	}
+	client := model.Client{
+		Name:     clientDto.Name,
+		LastName: clientDto.LastName,
+		Email:    clientDto.Email,
+		Password: Encrypt(clientDto.Password),
+		Dni:      clientDto.Dni,
+		Ruc:      clientDto.Ruc,
+		Phone:    clientDto.Phone,
+		Picture:  clientDto.Picture,
+		Address:  clientDto.Address,
+	}
+
 	clientID := model.Client{}
 	clientID.ID = ID
 	DB().Model(&clientID).Updates(client)
@@ -39,6 +82,7 @@ func (c *ClientDao) Update(ID uint, client *model.Client) error {
 }
 
 func (c *ClientDao) GetByID(ID uint) (*model.Client, error) {
+	// devolver con el role name
 	client := model.Client{}
 	DB().First(&client, ID)
 	return &client, nil

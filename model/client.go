@@ -6,7 +6,6 @@ type Client struct {
 	LastName         string `gorm:"type:varchar(100); default:''; not null" json:"last_name"`
 	Email            string `gorm:"uniqueIndex; type:varchar(255); not null" json:"email"`
 	Password         string `gorm:"type:varchar(255); not null" json:"password"`
-	RememberToken    string `gorm:"type:varchar(250)" json:"remember_token"`
 	Dni              string `gorm:"type:char(8)" json:"dni"`
 	Ruc              string `gorm:"type:varchar(40); default:''" json:"ruc"`
 	Phone            string `gorm:"type:varchar(20); default:''" json:"phone"`

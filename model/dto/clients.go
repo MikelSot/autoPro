@@ -1,6 +1,9 @@
 package dto
 
-import "time"
+import (
+	"github.com/dgrijalva/jwt-go"
+	"time"
+)
 
 // optener todos los comentarios
 type CommentClients []*CommentClient
@@ -23,12 +26,6 @@ type SignInClient struct {
 	Password string `json:"password"`
 }
 
-type MessageInClient struct {
-	Name    string `json:"name"`
-	Email   string `json:"email"`
-	Affair  string `json:"affair"`
-	Message string `json:"message"`
-}
 
 // insertar su informacion o actualizar
 type EditClient struct {
@@ -42,4 +39,31 @@ type EditClient struct {
 	Phone    string `json:"phone"`
 	Picture  string `json:"picture"`
 	Address  string `json:"address"`
+}
+
+type DataClient struct {
+	ID            uint   `json:"id"`
+	Name          string `json:"name"`
+	LastName      string `json:"last_name"`
+	Email         string `json:"email"`
+	Password      string `json:"password"`
+	RememberToken string `json:"remember_token"`
+	Dni           string `gorm:"type:char(8)" json:"dni"`
+	Ruc           string `json:"ruc"`
+	Phone         string `json:"phone"`
+	Picture       string `json:"picture"`
+	Address       string `json:"address"`
+	State         string `json:"state"`
+	Role          uint8 `json:"role"`
+}
+
+// Claim contiene los datos que iran en el payload del token
+type Claim struct {
+	ID       uint   `json:"id"`
+	Name     string `json:"name"`
+	LastName string `json:"last_name"`
+	Email    string `json:"email"`
+	State    string `json:"state"`
+	Role     uint8   `json:"role"`
+	jwt.StandardClaims
 }

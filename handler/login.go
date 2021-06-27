@@ -91,3 +91,17 @@ const (
 //	return true, nil
 //}
 
+
+
+
+//func (c *ClientDao) Create(client *model.Client) error {
+//	DB().Create(&client)
+//	return nil
+//}
+//
+//func (c *ClientDao) Update(ID uint, client *model.Client) error {
+//	clientID := model.Client{}
+//	clientID.ID = ID
+//	DB().Model(&clientID).Updates(client)
+//	return nil
+//}
