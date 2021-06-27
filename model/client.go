@@ -17,7 +17,6 @@ type Client struct {
 	RoleID           uint8  `gorm:"default:2" json:"role_id"`
 	Appointments     []Appointment
 	TechnicalReviews []TechnicalReview
-	Blogs            []Blog
 	Comments         []Comment
 	Invoices         []Invoice
 	TimeModel

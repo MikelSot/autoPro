@@ -3,13 +3,12 @@ package database
 import (
 	"errors"
 	"github.com/MikelSot/autoPro/model"
-	"github.com/MikelSot/autoPro/model/dto"
 )
 
 // IClient interface de CRUD
 type IClientCRUD interface {
-	Create(clientDot *dto.SignInClient) error
-	Update(ID uint, clientDot *dto.InsertClient) error
+	Create(client *model.Client) error
+	Update(ID uint, client *model.Client) error
 	GetByID(ID uint) (*model.Client, error)
 	GetAll(max int) (*model.Clients, error)
 	DeleteSoft(ID uint) error
@@ -17,45 +16,12 @@ type IClientCRUD interface {
 }
 
 
-func (c *ClientDao) Create(clientDot *dto.SignInClient) error {
-	if len(clientDot.Name) < LenName || len(clientDot.LastName) < LenName {
-		return ErrSingIn
-	}
-
-	if len(clientDot.Email) < LenName || len(clientDot.Password) < LenName {
-		return ErrEmail
-	}
-
-	client := model.Client{
-		Name:     clientDot.Name,
-		LastName: clientDot.LastName,
-		Email:    clientDot.Email,
-		Password: encrypt(clientDot.Password),
-	}
+func (c *ClientDao) Create(client *model.Client) error {
 	DB().Create(&client)
 	return nil
 }
 
-func (c *ClientDao) Update(ID uint, clientDot *dto.InsertClient) error {
-	if len(clientDot.Name) < LenName || len(clientDot.LastName) < LenName {
-		return ErrUpdate
-	}
-
-	if len(clientDot.Email) < LenName || len(clientDot.Password) < LenName {
-		return ErrEmail
-	}
-
-	client := model.Client{
-		Name:     clientDot.Name,
-		LastName: clientDot.LastName,
-		Email:    clientDot.Email,
-		Password: encrypt(clientDot.Password),
-		Dni:      clientDot.Dni,
-		Ruc:      clientDot.Ruc,
-		Phone:    clientDot.Phone,
-		Picture:  clientDot.Picture,
-		Address:  clientDot.Address,
-	}
+func (c *ClientDao) Update(ID uint, client *model.Client) error {
 	clientID := model.Client{}
 	clientID.ID = ID
 	DB().Model(&clientID).Updates(client)
@@ -96,8 +62,8 @@ func (c *ClientDao) DeletePermanent(ID uint) error {
 func (c *ClientDao) QueryEmailExists(email string) (bool,model.Client, model.Employee, error) {
 	const ExistsEmail = "Este Email ya existe USUARIO"
 	client := model.Client{}
-	values := DB().Limit(1).Select("Email").Find(&client, "email = ?", email)
-	//values := DB().Table("clients").Select("Email").Where("email = ?", email)
+	values := DB().Limit(1).Find(&client, "email = ?", email)
+	//values := DB().Limit(1).Select("Email").Find(&client, "email = ?", email)
 	if values.RowsAffected != ZeroRowsAffected {
 		return true, client,model.Employee{},errors.New(ExistsEmail)
 	}
@@ -123,7 +89,4 @@ func (c *ClientDao) QueryUriExists(uri string) (bool, error) {
 	}
 	return false, nil
 }
-
-
-
 
