@@ -5,17 +5,6 @@ import (
 	"github.com/MikelSot/autoPro/model/dto"
 )
 
-type ICommentCRUD interface {
-	Create(comment *model.Comment) error
-	Update(ID uint,comment *model.Comment) error
-	DeleteSoft(ID uint) error
-}
-
-type IQueryComment interface {
-	AllCommentBlog(ID, max int) (*dto.CommentClients, error) // ID blog
-	AllCommentProduct(ID, max int) (*dto.CommentClients, error) // ID product
-}
-
 type CommentDao struct {
 	commentDao model.Comment
 }

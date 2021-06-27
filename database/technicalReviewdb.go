@@ -2,14 +2,6 @@ package database
 
 import "github.com/MikelSot/autoPro/model"
 
-type ITechnicalReviewCRUD interface {
-	Create(review *model.TechnicalReview) error
-	Update(ID uint, review *model.TechnicalReview) error
-	GetByID(ID uint) (*model.TechnicalReview, error)
-	GetAll(max int) (*model.TechnicalReviews, error)
-	DeleteSoft(ID uint) error
-	DeletePermanent(ID uint) error
-}
 
 type IQueryReview interface {
 	AllreviewClient(ID uint, max int) (*model.TechnicalReviews, error)

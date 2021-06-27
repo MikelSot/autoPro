@@ -2,14 +2,6 @@ package database
 
 import "github.com/MikelSot/autoPro/model"
 
-type IWorkshopCRUD interface {
-	Create(workshop *model.Workshop) error
-	Update(ID uint8, workshop *model.Workshop) error
-	GetByID(ID uint8) (*model.Workshop, error)
-	GetAll(max int) (*model.Workshops, error)
-	DeleteSoft(ID uint8) error
-	DeletePermanent(ID uint8) error
-}
 
 type WorkshopDao struct {
 	workshopDao model.Workshop

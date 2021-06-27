@@ -3,7 +3,6 @@ package database
 import (
 	"errors"
 	"fmt"
-	"github.com/MikelSot/autoPro/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
@@ -23,15 +22,6 @@ const (
 	MaxGetAll = 10
 	Maxcomment = 10
 )
-
-
-// IQueryExists esta interface tiene metodos para validar si ya existe determinado atributo.
-type IQueryExists interface {
-	QueryEmailExists(email string) (bool,model.Client, model.Employee, error)
-	QueryDniExists(dni string) (bool, error)
-	QueryUriExists(uri string) (bool, error)
-}
-
 
 
 // connectionDB conexion a la base de datos, singleton

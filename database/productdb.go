@@ -5,19 +5,6 @@ import (
 	"github.com/MikelSot/autoPro/model/dto"
 )
 
-type IProductCRUD interface {
-	Create( product *model.Product) error
-	Update(ID uint,  product *model.Product) error
-	GetByID(ID uint) (*model.Product, error)
-	GetAll(max int) (*model.Products, error)
-	DeleteSoft(ID uint) error
-	DeletePermanent(ID uint) error
-}
-
-type IQueryProduct interface {
-	AllProductsCategory(ID uint, max int) (dto.ProductClients, error)
-	AllProductsWorkshop(ID uint, max int) (dto.ProductClients, error)
-}
 
 type ProductDao struct {
 	productDao model.Product

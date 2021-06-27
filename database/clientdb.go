@@ -3,7 +3,6 @@ package database
 import (
 	"errors"
 	"github.com/MikelSot/autoPro/model"
-	"github.com/MikelSot/autoPro/model/dto"
 	"golang.org/x/crypto/bcrypt"
 	"log"
 )
@@ -14,10 +13,6 @@ var (
 	ErrEmail       = errors.New("error el email o contraseña")
 	ErrExistsEmail = errors.New("el email ya existe")
 	ErrExistsDni   = errors.New("el email ya existe")
-)
-
-const (
-	at = "@"
 )
 
 
@@ -31,94 +26,82 @@ func NewClientDao() ClientDao {
 	return ClientDao{}
 }
 
-func (c *ClientDao) Login(clientdto dto.LoginClient) (model.Client, bool) {
-	exists, client, _, _ := c.QueryEmailExists(clientdto.Email)
-	if exists == false {
-		return client, false
-	}
-
-	pass := []byte(clientdto.Password)
-	passdb := []byte(client.Password)
-	err := bcrypt.CompareHashAndPassword(passdb, pass)
-	if err != nil {
-		// el error ocurre cuando no coinciden
-		return model.Client{}, false
-	}
-	return client, true
+func (c *ClientDao) Create(client *model.Client) error {
+	DB().Create(&client)
+	return nil
 }
 
-func (c *ClientDao) SingIn(clientDto dto.SignInClient) (bool, error) {
-	if len(clientDto.Name) < LenName || len(clientDto.LastName) < LenName {
-		return false, ErrSingIn
-	}
-
-	if len(clientDto.Email) < LenName || len(clientDto.Password) < LenName {
-		return false, ErrEmail
-	}
-
-	existsEmail, _, _, _ := c.QueryEmailExists(clientDto.Email)
-	if existsEmail {
-		return false, ErrExistsEmail
-	}
-
-	url := at + clientDto.Name + clientDto.LastName
-	existsUri, _ := c.QueryUriExists(url)
-	if existsUri {
-		url = at + url
-	}
-	client := model.Client{
-		Name:     clientDto.Name,
-		LastName: clientDto.LastName,
-		Email:    clientDto.Email,
-		Password: encrypt(clientDto.Password),
-		Uri:      url,
-	}
-
-	err := c.Create(&client)
-	if err != nil {
-		return false, ErrSingIn
-	}
-	return true, nil
+func (c *ClientDao) Update(ID uint, client *model.Client) error {
+	clientID := model.Client{}
+	clientID.ID = ID
+	DB().Model(&clientID).Updates(client)
+	return nil
 }
 
-func (c *ClientDao) EditInformation(clientDto dto.EditClient) (bool, error) {
-	if len(clientDto.Name) < LenName || len(clientDto.LastName) < LenName {
-		return false, ErrUpdate
-	}
-
-	if len(clientDto.Email) < LenName || len(clientDto.Password) < LenName {
-		return false, ErrEmail
-	}
-
-	existsEmail, _, _, _ := c.QueryEmailExists(clientDto.Email)
-	if existsEmail {
-		return false, ErrExistsEmail
-	}
-
-	existsDni, _ := c.QueryDniExists(clientDto.Dni)
-	if existsDni {
-		return false, ErrExistsDni
-	}
-
-	client := model.Client{
-		Name:     clientDto.Name,
-		LastName: clientDto.LastName,
-		Email:    clientDto.Email,
-		Password: encrypt(clientDto.Password),
-		Dni:      clientDto.Dni,
-		Ruc:      clientDto.Ruc,
-		Phone:    clientDto.Phone,
-		Picture:  clientDto.Picture,
-		Address:  clientDto.Address,
-	}
-	err := c.Update(clientDto.ID, &client)
-	if err != nil {
-		return false, ErrSingIn
-	}
-	return true, nil
+func (c *ClientDao) GetByID(ID uint) (*model.Client, error) {
+	client := model.Client{}
+	DB().First(&client, ID)
+	return &client, nil
 }
 
-func encrypt(password string) string {
+func (c *ClientDao) GetAll(max int) (*model.Clients, error) {
+	if max <  MaxGetAll {
+		max = MaxGetAll
+	}
+	clients := model.Clients{}
+	DB().Limit(max).Find(&clients)
+	return &clients, nil
+}
+
+// DeleteSoft borrado sueve, no elimina ese registro como tal de la tabla simplemente le cambia de atributo
+func (c *ClientDao) DeleteSoft(ID uint) error {
+	client := model.Client{}
+	client.ID = ID
+	DB().Delete(&client)
+	return nil
+}
+
+// DeletePermanent  borrado permanente, borra por completo de la tabla ese registro
+func (c *ClientDao) DeletePermanent(ID uint) error {
+	client := model.Client{}
+	client.ID = ID
+	DB().Unscoped().Delete(&client)
+	return nil
+}
+
+func (c *ClientDao) QueryEmailExists(email string) (bool,model.Client, model.Employee, error) {
+	const ExistsEmail = "Este Email ya existe USUARIO"
+	client := model.Client{}
+	values := DB().Limit(1).Find(&client, "email = ?", email)
+	//values := DB().Limit(1).Select("Email").Find(&client, "email = ?", email)
+	if values.RowsAffected != ZeroRowsAffected {
+		return true, client,model.Employee{},errors.New(ExistsEmail)
+	}
+	return false,model.Client{}, model.Employee{},nil
+}
+
+func (c *ClientDao) QueryDniExists(dni string) (bool, error) {
+	const ExistsDni = "El DNI ya existe USUARIO"
+	client := model.Client{}
+	values := DB().Limit(1).Select("Dni").Find(&client, "dni = ?", dni)
+	if values.RowsAffected != ZeroRowsAffected {
+		return true, errors.New(ExistsDni)
+	}
+	return false, nil
+}
+
+func (c *ClientDao) QueryUriExists(uri string) (bool, error) {
+	const ExistsUri = "El DNI ya existe USUARIO"
+	client := model.Client{}
+	values := DB().Limit(1).Select("Uri").Find(&client, "uri = ?", uri)
+	if values.RowsAffected != ZeroRowsAffected {
+		return true, errors.New(ExistsUri)
+	}
+	return false, nil
+}
+
+
+func Encrypt(password string) string {
 	cost := 6 // es el numero de veces que recorre y encripta
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), cost)
 	if err != nil {

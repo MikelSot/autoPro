@@ -5,17 +5,6 @@ import (
 	"github.com/MikelSot/autoPro/model"
 )
 
-type IEmployeeCRUD interface {
-	Create(employee *model.Employee) error
-	Update(ID uint, employee *model.Employee) error
-	GetByID(ID uint) (*model.Employee, error)
-	GetAll(max int) (*model.Employees, error)
-	DeleteSoft(ID uint) error
-	DeletePermanent(ID uint) error
-}
-
-// todas las citas en que el usuario intervido (ir a recojer su auto)
-//
 
 type EmployeeDao struct {
 	employeeDao model.Employee

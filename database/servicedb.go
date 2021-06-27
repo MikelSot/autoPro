@@ -2,15 +2,6 @@ package database
 
 import "github.com/MikelSot/autoPro/model"
 
-type IServiceCRUD interface {
-	Create(service *model.Service) error
-	Update(ID uint8,service *model.Service) error
-	GetByID(ID uint8) (*model.Service, error)
-	GetAll(max int) (*model.Services, error)
-	DeleteSoft(ID uint8) error
-	DeletePermanent(ID uint8) error
-}
-
 type ServiceDao struct {
 	serviceDao model.Service
 }

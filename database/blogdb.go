@@ -2,20 +2,6 @@ package database
 
 import "github.com/MikelSot/autoPro/model"
 
-type IBlogCRUD interface {
-	Create( blog *model.Blog) error
-	Update(ID uint,  blog *model.Blog) error
-	GetByID(ID uint) (*model.Blog, error)
-	GetAll(max int) (*model.Blogs, error)
-	DeleteSoft(ID uint) error
-	DeletePermanent(ID uint) error
-}
-
-type IQueryBlog interface {
-	AllBlogCategory(ID, max int) (*model.Blogs, error)
-	AllBlogEmployee(ID uint, max int) (*model.Blogs, error)
-}
-
 type BlogDao struct {
 	blogDao model.Blog
 }

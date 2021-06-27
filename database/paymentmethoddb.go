@@ -2,15 +2,6 @@ package database
 
 import "github.com/MikelSot/autoPro/model"
 
-type IPaymentMethodCRUD interface {
-	Create(method *model.PaymentMethod) error
-	Update(ID uint8, method *model.PaymentMethod) error
-	GetByID(ID uint8) (*model.PaymentMethod, error)
-	GetAll(max int) (*model.PaymentMethods, error)
-	DeleteSoft(ID uint8) error
-	DeletePermanent(ID uint8) error
-}
-
 type PaymentMethodDao struct {
 	paymentMethodDao model.PaymentMethod
 }

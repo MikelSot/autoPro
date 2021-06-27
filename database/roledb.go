@@ -2,14 +2,6 @@ package database
 
 import "github.com/MikelSot/autoPro/model"
 
-type IRoleCRUD interface {
-	Create(role *model.Role) error
-	Update(ID uint8, role *model.Role) error
-	GetByID(ID uint8) (*model.Role, error)
-	GetAll(max int) (*model.Roles, error)
-	DeleteSoft(ID uint8) error
-	DeletePermanent(ID uint8) error
-}
 
 type RoleDao struct {
 	roleDao model.Role

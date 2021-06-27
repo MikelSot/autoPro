@@ -5,18 +5,6 @@ import (
 	"github.com/MikelSot/autoPro/model/dto"
 )
 
-type IInvoiceCRUD interface {
-	Create(invoice *model.Invoice) error
-	Update(ID uint, invoice *model.Invoice) error
-	GetByID(ID uint) (*model.Invoice, error)
-	DeleteSoft(ID uint) error
-}
-
-type IQueryInvoice interface {
-	AllInvoiceClient(ID, max int) (*dto.InvoiceClients, error)
-	AllInvoiceWorkshop(ID uint, max int) (*dto.InvoiceWorkshops, error)
-}
-
 type InvoiceDao struct {
 	invoiceDao model.Invoice
 }
