@@ -4,6 +4,8 @@ import (
 	"errors"
 	"github.com/MikelSot/autoPro/model"
 	"github.com/MikelSot/autoPro/model/dto"
+	"golang.org/x/crypto/bcrypt"
+	"log"
 )
 
 var (
@@ -21,6 +23,8 @@ type IClientCRUD interface {
 	DeleteSoft(ID uint) error
 	DeletePermanent(ID uint) error
 }
+
+
 
 //// esta estruvtura ira en el handler
 //type ClientIN struct {
@@ -47,6 +51,15 @@ func NewClientDao() ClientDao {
 	return ClientDao{}
 }
 
+func encrypt(password string) string{
+	cost := 6 // es el numero de veces que recorre y encripta
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), cost)
+	if err != nil {
+		log.Fatal("Error al encriptar contraseña\n")
+	}
+	return string(bytes)
+}
+
 func (c *ClientDao) Create(clientDot *dto.SignInClient) error {
 	if len(clientDot.Name) < LenName || len(clientDot.LastName) < LenName {
 		return ErrSingIn
@@ -60,7 +73,7 @@ func (c *ClientDao) Create(clientDot *dto.SignInClient) error {
 		Name:     clientDot.Name,
 		LastName: clientDot.LastName,
 		Email:    clientDot.Email,
-		Password: clientDot.Password,
+		Password: encrypt(clientDot.Password),
 	}
 	DB().Create(&client)
 	return nil
@@ -79,7 +92,7 @@ func (c *ClientDao) Update(ID uint, clientDot *dto.InsertClient) error {
 		Name:     clientDot.Name,
 		LastName: clientDot.LastName,
 		Email:    clientDot.Email,
-		Password: clientDot.Password,
+		Password: encrypt(clientDot.Password),
 		Dni:      clientDot.Dni,
 		Ruc:      clientDot.Ruc,
 		Phone:    clientDot.Phone,
@@ -123,21 +136,21 @@ func (c *ClientDao) DeletePermanent(ID uint) error {
 	return nil
 }
 
-func (c *ClientDao) QueryEmailExists(email string) (bool, error) {
+func (c *ClientDao) QueryEmailExists(email string) (bool,model.Client, model.Employee, error) {
 	const ExistsEmail = "Este Email ya existe USUARIO"
 	client := model.Client{}
-	values := DB().Select("Email").Find(&client, "email = ?", email)
+	values := DB().Limit(1).Select("Email").Find(&client, "email = ?", email)
 	//values := DB().Table("clients").Select("Email").Where("email = ?", email)
 	if values.RowsAffected != ZeroRowsAffected {
-		return true, errors.New(ExistsEmail)
+		return true, client,model.Employee{},errors.New(ExistsEmail)
 	}
-	return false, nil
+	return false,model.Client{}, model.Employee{},nil
 }
 
 func (c *ClientDao) QueryDniExists(dni string) (bool, error) {
 	const ExistsDni = "El DNI ya existe USUARIO"
 	client := model.Client{}
-	values := DB().Select("Dni").Find(&client, "dni = ?", dni)
+	values := DB().Limit(1).Select("Dni").Find(&client, "dni = ?", dni)
 	if values.RowsAffected != ZeroRowsAffected {
 		return true, errors.New(ExistsDni)
 	}
@@ -147,12 +160,22 @@ func (c *ClientDao) QueryDniExists(dni string) (bool, error) {
 func (c *ClientDao) QueryUriExists(uri string) (bool, error) {
 	const ExistsUri = "El DNI ya existe USUARIO"
 	client := model.Client{}
-	values := DB().Select("Uri").Find(&client, "uri = ?", uri)
+	values := DB().Limit(1).Select("Uri").Find(&client, "uri = ?", uri)
 	if values.RowsAffected != ZeroRowsAffected {
 		return true, errors.New(ExistsUri)
 	}
 	return false, nil
 }
+
+
+
+
+
+
+
+
+
+
 
 //func Crear()  {
 //

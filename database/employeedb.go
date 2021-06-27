@@ -66,14 +66,14 @@ func (e *EmployeeDao) DeletePermanent(ID uint) error {
 	return nil
 }
 
-func (e *EmployeeDao) QueryEmailExists(email string) (bool, error) {
+func (e *EmployeeDao) QueryEmailExists(email string) (bool, model.Client, model.Employee, error) {
 	const  ExistsEmail = "Este Email ya existe EMPLEADO"
 	employee := model.Employee{}
 	values := DB().Select("Email").Find(&employee, "email = ?", email)
 	if values.RowsAffected != ZeroRowsAffected {
-		return true, errors.New(ExistsEmail)
+		return true,model.Client{} ,model.Employee{} ,errors.New(ExistsEmail)
 	}
-	return false,nil
+	return false,model.Client{},model.Employee{},nil
 }
 
 func (e *EmployeeDao) QueryDniExists(dni string) (bool, error) {
