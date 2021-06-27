@@ -1,6 +1,7 @@
 package database
 
 import (
+	"github.com/MikelSot/autoPro/database/dao"
 	"github.com/MikelSot/autoPro/model"
 	"github.com/MikelSot/autoPro/model/dto"
 )
@@ -20,8 +21,8 @@ type CommentDao struct {
 	commentDao model.Comment
 }
 
-func NewCommentDao() ClientDao {
-	return ClientDao{}
+func NewCommentDao() dao.ClientDao {
+	return dao.ClientDao{}
 }
 
 func (c *CommentDao) Create(comment *model.Comment) error {
