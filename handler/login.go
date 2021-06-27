@@ -1,5 +1,12 @@
 package handler
 
+import (
+	"encoding/json"
+	"github.com/MikelSot/autoPro/jwt"
+	"github.com/MikelSot/autoPro/model/dto"
+	"net/http"
+)
+
 const (
 	at = "@"
 )
@@ -105,3 +112,44 @@ const (
 //	DB().Model(&clientID).Updates(client)
 //	return nil
 //}
+
+type login struct {
+	query IQueryExists
+	crud IClientCRUD
+}
+
+func newLogin(q IQueryExists, c IClientCRUD) login {
+	return login{
+		q,
+		c,
+	}
+}
+
+func (l *login) login(w http.ResponseWriter, r *http.Request)  {
+	// validar con regex
+	if r.Method != http.MethodPost {
+		w.Header().Set("Content-type","application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(`{"message_type":""error", "message":"Metodo no permitido"}`))
+		return
+	}
+
+	data :=dto.LoginClient{}
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil{
+		w.Header().Set("Content-type","application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(`{"message_type":""error", "message":"estructura no valida"}`))
+		return
+	}
+
+	// a qui validas si existe el email y contraseña son validos y si existen
+
+	// ya luego de validar eso generas el token
+	token, err := jwt.GenerateToken(&data)
+
+}
+
+
+
+

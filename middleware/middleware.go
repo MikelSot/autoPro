@@ -1,13 +1,17 @@
 package middleware
 
-import "net/http"
+import (
+	"net/http"
+	"github.com/MikelSot/autoPro/jwt"
+)
 
 func Authentication(fun func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
-
 	return func(w http.ResponseWriter, r *http.Request){
 		token := r.Header.Get("Authorization")
-		if token == ""{
+		_, err := jwt.ValidateToken(token)
+		if err != nil {
 			forbidden(w, r)
+			return
 		}
 		fun(w, r)
 	}

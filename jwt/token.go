@@ -1,6 +1,7 @@
 package jwt
 
 import (
+	"errors"
 	"github.com/MikelSot/autoPro/model/dto"
 	"github.com/dgrijalva/jwt-go"
 	"time"
@@ -29,4 +30,28 @@ func GenerateToken(data *dto.DataClient) (string, error) {
 		return "", err
 	}
 	return signedToken, nil
+}
+
+func ValidateToken(t string) (dto.Claim, error) {
+	token, err := jwt.ParseWithClaims(t, &dto.Claim{}, verifyFunction)
+	if err != nil {
+		return dto.Claim{}, err
+	}
+
+	if !token.Valid{
+		return dto.Claim{}, errors.New("token no valid")
+	}
+
+	// optener el claim de los claim
+	claim , ok := token.Claims.(*dto.Claim)
+	if !ok {
+		return dto.Claim{}, errors.New("no se puedo optener los claim")
+	}
+
+	return *claim, nil
+}
+
+func verifyFunction(t *jwt.Token) (interface{}, error) {
+	// retorna la informacion de nuestro archivo publico
+	return verifyKey, nil
 }
