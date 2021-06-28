@@ -2,23 +2,20 @@ package middleware
 
 import (
 	"net/http"
+	"github.com/labstack/echo"
 	"github.com/MikelSot/autoPro/jwt"
 )
 
-func Authentication(fun func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request){
-		token := r.Header.Get("Authorization")
+//  echo.HandlerFunc -->  w http.ResponseWriter, r *http.Request
+
+// Authentication para validar que el token valido
+func Authentication(fun echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error{
+		token := c.Request().Header.Get("Authorization")
 		_, err := jwt.ValidateToken(token)
 		if err != nil {
-			forbidden(w, r)
-			return
+			return c.JSON(http.StatusForbidden, map[string]string{"error":"no permitido"})
 		}
-		fun(w, r)
+		return fun(c)
 	}
-}
-
-func forbidden(w http.ResponseWriter, r *http.Request)  {
-	w.Header().Set("Content-type","application/json")
-	w.WriteHeader(http.StatusBadRequest)
-	w.Write([]byte(`{"message_type":""error", "message":"NO TIENES AUTORIZACION"}`))
 }

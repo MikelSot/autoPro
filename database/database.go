@@ -1,7 +1,6 @@
 package database
 
 import (
-	"errors"
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -12,7 +11,7 @@ import (
 var (
 	db   *gorm.DB
 	once sync.Once
-
+	onceMigration sync.Once
 )
 
 const (
@@ -41,11 +40,12 @@ func connectionDB() {
 
 // Migration crea las tablas y ademas ingresa datos
 func Migration() error  {
-	err,_ :=migrationAndInsert()
-	if err != nil {
-		log.Fatalf("%v", err)
-		return errors.New("Error al crear las tablas o al ingresar datos a las tablas")
-	}
+	var err error
+	onceMigration.Do(func() {
+		err,_ =migrationAndInsert()
+	})
+
+	fmt.Println("DATABASE --> MIGRATION")
 	return nil
 }
 

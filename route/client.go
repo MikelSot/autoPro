@@ -5,6 +5,6 @@ import (
 	"github.com/labstack/echo"
 )
 
-func RouteClient(e *echo.Echo, crud handler.IClientCRUD)  {
+func Client(e *echo.Echo, crud handler.IClientCRUD)  {
 
 }

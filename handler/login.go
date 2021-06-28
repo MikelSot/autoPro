@@ -1,9 +1,10 @@
 package handler
 
 import (
-	"encoding/json"
+	"fmt"
 	"github.com/MikelSot/autoPro/jwt"
 	"github.com/MikelSot/autoPro/model/dto"
+	"github.com/labstack/echo"
 	"net/http"
 )
 
@@ -125,28 +126,33 @@ func newLogin(q IQueryExists, c IClientCRUD) login {
 	}
 }
 
-func (l *login) login(w http.ResponseWriter, r *http.Request)  {
+//
+//
+
+// Todos los campos deben tener contenido
+
+func (l *login) login(c echo.Context) error {
 	// validar con regex
-	if r.Method != http.MethodPost {
-		w.Header().Set("Content-type","application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`{"message_type":""error", "message":"Metodo no permitido"}`))
-		return
-	}
 
 	data :=dto.LoginClient{}
-	err := json.NewDecoder(r.Body).Decode(&data)
+	err := c.Bind(&data)  //err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil{
-		w.Header().Set("Content-type","application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(`{"message_type":""error", "message":"estructura no valida"}`))
-		return
+		resp := newResponse(Error, "estructura no valida", nil)
+		return c.JSON(http.StatusBadRequest, resp)
 	}
 
 	// a qui validas si existe el email y contraseña son validos y si existen
 
-	// ya luego de validar eso generas el token
+	// ya luego de validar eso generas el token (recuerda que puedes retornar los datos de ese cliente)
 	token, err := jwt.GenerateToken(&data)
+	if err != nil{
+		resp := newResponse(Error, "estructura no valida", nil)
+		return c.JSON(http.StatusBadRequest, resp)
+	}
+
+	fmt.Println(token)
+	// si salio bien all le enviamos la data  que queremos enviar
+	return nil
 
 }
 

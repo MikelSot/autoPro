@@ -46,7 +46,7 @@ func (c *ClientDao) Create(clientDto *dto.SignInClient) error {
 		Name:     clientDto.Name,
 		LastName: clientDto.LastName,
 		Email:    clientDto.Email,
-		Password: Encrypt(clientDto.Password),
+		Password: encrypt(clientDto.Password),
 		Uri:      url,
 	}
 
@@ -67,7 +67,7 @@ func (c *ClientDao) Update(ID uint, clientDto *dto.EditClient) error {
 		Name:     clientDto.Name,
 		LastName: clientDto.LastName,
 		Email:    clientDto.Email,
-		Password: Encrypt(clientDto.Password),
+		Password: encrypt(clientDto.Password),
 		Dni:      clientDto.Dni,
 		Ruc:      clientDto.Ruc,
 		Phone:    clientDto.Phone,
@@ -145,7 +145,7 @@ func (c *ClientDao) QueryUriExists(uri string) (bool, error) {
 }
 
 
-func Encrypt(password string) string {
+func encrypt(password string) string {
 	cost := 6 // es el numero de veces que recorre y encripta
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), cost)
 	if err != nil {
