@@ -19,7 +19,6 @@ const (
 	clientCreated             = "Cliente creado correctamente"
 	updatedClient             = "Cliente actualizada correctamente"
 	errorEmailIncorrect       = "Email incorrecto"
-	errorEmailOrPassword      = "El email o contraseña son incorrectos"
 	errorStruct               = "Hubo un error con el registro: Registro no permitido a este dominio de Email o la estructura del correo es invalida"
 	errorContent              = "Todos los campos deben tener contenido"
 	errorEmailExists          = "Ya existe una cuenta con este correo electrónico"
@@ -30,15 +29,15 @@ const (
 	errorGetAll				  = "Hubo un problema al obtener todas los clientes"
 )
 
-type client struct {
+type clientHd struct {
 	crudExists IClientCRUDExists
 }
 
-func NewClient(ce IClientCRUDExists) client {
-	return client{ce}
+func NewClientHd(ce IClientCRUDExists) clientHd {
+	return clientHd{ce}
 }
 
-func (c *client) singIn(e echo.Context) error {
+func (c *clientHd) singIn(e echo.Context) error {
 	data := dto.SignInClient{}
 	err := e.Bind(&data) // de json a estructura
 	if err != nil {
@@ -46,7 +45,7 @@ func (c *client) singIn(e echo.Context) error {
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	err = areDataValid(&data, *c, e)
+	err = areDataValidClient(&data, *c, e)
 	if err != nil {
 		return err
 	}
@@ -56,13 +55,13 @@ func (c *client) singIn(e echo.Context) error {
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	// puede o no ir la generacion de un token
 
+	// puede o no ir la generacion de un token
 	resp := newResponse(Message, clientCreated, nil)
 	return e.JSON(http.StatusCreated, resp)
 }
 
-func (c *client) editClient(e echo.Context) error {
+func (c *clientHd) editClient(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
 		res := newResponse(Error, errorId, nil)
@@ -77,12 +76,12 @@ func (c *client) editClient(e echo.Context) error {
 	}
 
 	dataSign := dto.SignInClient{Name: data.Name, LastName: data.LastName, Email: data.Email}
-	err = areDataValid(&dataSign, *c, e)
+	err = areDataValidClient(&dataSign, *c, e)
 	if err != nil {
 		return err
 	}
 
-	err = isValidDniOrUri(&data, *c, e)
+	err = isValidDniOrUriClient(&data, *c, e)
 	if err != nil {
 		return err
 	}
@@ -98,7 +97,7 @@ func (c *client) editClient(e echo.Context) error {
 	return nil
 }
 
-func (c *client) getById(e echo.Context) error {
+func (c *clientHd) getById(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
 		response := newResponse(Error, errorId, nil)
@@ -115,7 +114,7 @@ func (c *client) getById(e echo.Context) error {
 	return e.JSON(http.StatusOK, res)
 }
 
-func (c *client) getAll(e echo.Context) error{
+func (c *clientHd) getAll(e echo.Context) error{
 	max, err := strconv.Atoi(e.Param("max"))
 	if err != nil {
 		response := newResponse(Error, errorId, nil)
@@ -132,7 +131,7 @@ func (c *client) getAll(e echo.Context) error{
 	return e.JSON(http.StatusOK, res)
 }
 
-func (c *client) deleteSoft(e echo.Context) error {
+func (c *clientHd) deleteSoft(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
 		response := newResponse(Error, errorId, nil)
@@ -149,7 +148,7 @@ func (c *client) deleteSoft(e echo.Context) error {
 	return e.JSON(http.StatusOK, res)
 }
 
-func areDataValid(data *dto.SignInClient, c client, e echo.Context) error {
+func areDataValidClient(data *dto.SignInClient, c clientHd, e echo.Context) error {
 	data.Email = strings.TrimSpace(data.Email)
 	data.Name = strings.TrimSpace(data.Name)
 	data.LastName = strings.TrimSpace(data.LastName)
@@ -172,7 +171,7 @@ func areDataValid(data *dto.SignInClient, c client, e echo.Context) error {
 	return nil
 }
 
-func isValidDniOrUri(data *dto.EditClient, c client, e echo.Context) error {
+func isValidDniOrUriClient(data *dto.EditClient, c clientHd, e echo.Context) error {
 	data.Email = strings.TrimSpace(data.Email)
 	data.Name = strings.TrimSpace(data.Name)
 	data.LastName = strings.TrimSpace(data.LastName)

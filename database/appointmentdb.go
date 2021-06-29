@@ -1,15 +1,12 @@
 package database
 
 import (
-	"errors"
 	"github.com/MikelSot/autoPro/model"
 	"strconv"
 	"time"
 )
 
 const (
-	maxHour = 19
-	minHour = 8
 	maxAppointment = 20
 )
 
@@ -29,21 +26,11 @@ func NewApointmentDao() AppointmentDao {
 
 
 func (a *AppointmentDao) Create(appointment *model.Appointment) error {
-	const TimeError = "horario de cita no aceptada"
-	if appointment.DateHour.Hour() > maxHour || appointment.DateHour.Hour() < minHour{
-		return errors.New(TimeError)
-	}
-
 	DB().Create(&appointment)
 	return nil
 }
 
 func (a *AppointmentDao) Update(ID uint, appointment *model.Appointment) error {
-	const TimeError = "horario de cita no aceptada"
-	if appointment.DateHour.Hour() > maxHour || appointment.DateHour.Hour() < minHour{
-		return errors.New(TimeError)
-	}
-
 	appointmentID := model.Appointment{}
 	appointmentID.ID = ID
 	DB().Model(&appointmentID).Updates(appointment)

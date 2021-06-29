@@ -50,3 +50,12 @@ func (s ServiceDao) DeletePermanent(ID uint8) error {
 	DB().Unscoped().Delete(&service)
 	return nil
 }
+
+func (s ServiceDao) QueryServiceExists(name string) (bool, error) {
+	service := model.Service{}
+	values := DB().Limit(1).Select("name").Find(&service, "name = ?", name)
+	if values.RowsAffected != ZeroRowsAffected {
+		return true, nil
+	}
+	return false, nil
+}

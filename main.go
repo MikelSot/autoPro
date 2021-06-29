@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -22,24 +23,18 @@ func main() {
 	// aui traermos las rutas llamamos a esas funciones
 
 
-	// a qui podemos iniciar el puerto
 
-	//err := isEmail("miguelsr.1084gmail.com")
-	//if !err {
-	//	fmt.Println("error no es un email")
-	//}
-	//fmt.Println("sera un email")
+	now := time.Now()
+	me := now.Add(time.Hour * 24 * 7)
+	ahora := now.Format("2006-01-02")
+	ahorame := me.Format("2006-01-02")
+	//dateString := me.Format("2006-01-02")
 
-	comer := comer{
-		"       ct mr       ",
+	if ahora < ahorame {
+		fmt.Println("no son iguales p")
 	}
 
-	//input := "   Text   More here     "
-	//re_leadclose_whtsp := regexp.MustCompile(` `)
-	//final := re_leadclose_whtsp.ReplaceAllString(input, "")
-	//fmt.Println(final)
-	com(&comer)
-	fmt.Println(comer.name+"papi")
+	fmt.Println(ahorame)
 }
 
 type comer struct {

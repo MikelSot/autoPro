@@ -51,3 +51,12 @@ func (w *WorkshopDao) DeletePermanent(ID uint8) error {
 	DB().Unscoped().Delete(&workshop)
 	return nil
 }
+
+func (w *WorkshopDao) QueryWorkshopExists(name string) (bool, error) {
+	workshop := model.Workshop{}
+	values := DB().Limit(1).Select("name").Find(&workshop, "name = ?", name)
+	if values.RowsAffected != ZeroRowsAffected {
+		return true, nil
+	}
+	return false, nil
+}

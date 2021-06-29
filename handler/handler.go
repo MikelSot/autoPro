@@ -6,10 +6,19 @@ import (
 )
 
 
-// IClientCRUDExists embebida
+// IClientCRUDExists embebida de cliente
 type IClientCRUDExists interface {
 	IClientCRUD
 	IQueryExists
+}
+
+// IClientCRUDExists embebida de cita
+type IAppointmentCRUDQuery interface {
+	IAppointmentCRUD
+	IQueryAppointment
+	// en prueba por ahora
+	IQueryWorkshop
+	IQueryService
 }
 
 // IClient interface de CRUD
@@ -158,6 +167,11 @@ type IServiceCRUD interface {
 	DeletePermanent(ID uint8) error
 }
 
+// IQueryProduct interface de consulta de producto
+type IQueryService interface {
+	QueryServiceExists(name string) (bool, error)
+}
+
 // ITechnicalReviewCRUD interface de revicion tecnica
 type ITechnicalReviewCRUD interface {
 	Create(review *model.TechnicalReview) error
@@ -176,4 +190,9 @@ type IWorkshopCRUD interface {
 	GetAll(max int) (*model.Workshops, error)
 	DeleteSoft(ID uint8) error
 	DeletePermanent(ID uint8) error
+}
+
+// IQueryProduct interface de consulta de producto
+type IQueryWorkshop interface {
+	QueryWorkshopExists(name string) (bool, error)
 }
