@@ -21,6 +21,12 @@ type IAppointmentCRUDQuery interface {
 	IQueryService
 }
 
+type IServiceCRUDQuery interface {
+	IServiceCRUD
+	// esto esta ligado a lo anterior
+	IQueryService
+}
+
 type IProductCRUDQuery interface {
 	IProductCRUD
 	IQueryProduct

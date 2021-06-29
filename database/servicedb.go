@@ -1,6 +1,10 @@
 package database
 
-import "github.com/MikelSot/autoPro/model"
+import (
+	"github.com/MikelSot/autoPro/model"
+	"regexp"
+	"strings"
+)
 
 type ServiceDao struct {
 	serviceDao model.Service
@@ -11,6 +15,10 @@ func NewServiceDao() ServiceDao {
 }
 
 func (s ServiceDao) Create(service *model.Service) error {
+	regexSpace := regexp.MustCompile(` `)
+	nameWithoutSpace := regexSpace.ReplaceAllString(service.Name, "")
+	url := at + strings.ToLower(nameWithoutSpace)
+	service.Uri = url
 	DB().Create(&service)
 	return nil
 }

@@ -30,7 +30,7 @@ func (p *productHd) create(e echo.Context) error {
 	data := model.Product{}
 	err := e.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStruct, nil)
+		resp := newResponse(Error, errorStructProduct, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
