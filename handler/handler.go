@@ -32,6 +32,11 @@ type IProductCRUDQuery interface {
 	IQueryProduct
 }
 
+type ITechnicalReviewCRUDQuery interface {
+	ITechnicalReviewCRUD
+	IQueryReview
+}
+
 // IClient interface de CRUD
 type IClientCRUD interface {
 	Create(client *dto.SignInClient) error
@@ -192,6 +197,11 @@ type ITechnicalReviewCRUD interface {
 	DeleteSoft(ID uint) error
 	DeletePermanent(ID uint) error
 }
+
+type IQueryReview interface {
+	AllReviewClient(ID uint, max int) (*model.TechnicalReviews, error)
+}
+
 
 // IWorkshopCRUD interface crud de taller
 type IWorkshopCRUD interface {
