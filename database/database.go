@@ -16,10 +16,8 @@ var (
 
 const (
 	ZeroRowsAffected = 0
-	Zero = 0 // x, nadie lo usa por ahora
-	LenName= 3
-	MaxGetAll = 10
-	Maxcomment = 10
+	MaxGetAll        = 10
+	MaxComment       = 10
 )
 
 

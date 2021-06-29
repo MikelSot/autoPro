@@ -3,6 +3,8 @@ package database
 import (
 	"github.com/MikelSot/autoPro/model"
 	"github.com/MikelSot/autoPro/model/dto"
+	"regexp"
+	"strings"
 )
 
 
@@ -15,6 +17,10 @@ func NewProductDao() ProductDao {
 }
 
 func (p *ProductDao) Create(product *model.Product) error {
+	regexSpace := regexp.MustCompile(` `)
+	nameWithoutSpace := regexSpace.ReplaceAllString(product.Name, "")
+	url := at + strings.ToLower(nameWithoutSpace)
+	product.Uri = url
 	DB().Create(&product)
 	return nil
 }

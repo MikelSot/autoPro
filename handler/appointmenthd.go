@@ -25,6 +25,7 @@ const (
 	errorDate                      = "La fecha seleccionada esta fuera de servicio" // fecha pasada
 	errorGetAllAppointment         = "Hubo un problema al obtener todas las citas"
 	errorAppointmentIDDoesNotExist = "El ID de la cita no existe"
+	attentionOrderError            = "El ID de la cita no existe"
 )
 
 type appointmentHd struct {
@@ -128,10 +129,43 @@ func (a *appointmentHd) deleteSoft(e echo.Context) error {
 	return e.JSON(http.StatusOK, res)
 }
 
+func (a *appointmentHd) allOrderAttentionAvailable(e echo.Context) error {
+	available, err := a.crudQuery.AllOrderAttentionAvailable()
+	if err != nil {
+		response := newResponse(Error, attentionOrderError, nil)
+		return e.JSON(http.StatusBadRequest, response)
+	}
+	res := newResponse(Message, ok, available)
+	return e.JSON(http.StatusOK, res)
+}
+
+func (a *appointmentHd) allAppointmentClient(e echo.Context) error {
+	ID, err := strconv.Atoi(e.Param("id"))
+	if err != nil {
+		res := newResponse(Error, errorId, nil)
+		return e.JSON(http.StatusBadRequest, res)
+	}
+
+	max, err := strconv.Atoi(e.Param("max"))
+	if err != nil {
+		res := newResponse(Error, errorGetAllAppointment, nil)
+		return e.JSON(http.StatusBadRequest, res)
+	}
+
+
+	appointments, err := a.crudQuery.AllAppointmentClient(uint(ID), max)
+	if err != nil {
+		response := newResponse(Error, errorAppointmentIDDoesNotExist, nil)
+		return e.JSON(http.StatusBadRequest, response)
+	}
+
+	res := newResponse(Message, ok, appointments)
+	return e.JSON(http.StatusOK, res)
+}
+
 func areDataValidAppointment(data *model.Appointment, a appointmentHd, e echo.Context) error {
 	data.Workshop = strings.TrimSpace(data.Workshop)
 	data.Service = strings.TrimSpace(data.Service)
-	data.Description = strings.TrimSpace(data.Description)
 	data.Description = strings.TrimSpace(data.Description)
 	data.OrderAttention = strings.TrimSpace(data.OrderAttention)
 	data.VehicleType = strings.TrimSpace(data.VehicleType)

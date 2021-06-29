@@ -55,7 +55,6 @@ func (c *clientHd) singIn(e echo.Context) error {
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-
 	// puede o no ir la generacion de un token
 	resp := newResponse(Message, clientCreated, nil)
 	return e.JSON(http.StatusCreated, resp)

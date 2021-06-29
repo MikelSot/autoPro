@@ -33,8 +33,8 @@ func (c *CommentDao) DeleteSoft(ID uint) error {
 }
 
 func (c *CommentDao) AllCommentBlog(ID, max int) (*dto.CommentClients, error) {
-	if  max < Maxcomment{
-		max = Maxcomment
+	if  max < MaxComment {
+		max = MaxComment
 	}
 
 	commentClients := dto.CommentClients{}
@@ -53,8 +53,8 @@ func (c *CommentDao) AllCommentBlog(ID, max int) (*dto.CommentClients, error) {
 }
 
 func (c *CommentDao) AllCommentProduct(ID, max int) (*dto.CommentClients, error) {
-	if  max < Maxcomment{
-		max = Maxcomment
+	if  max < MaxComment {
+		max = MaxComment
 	}
 
 	commentClients := dto.CommentClients{}

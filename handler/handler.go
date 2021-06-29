@@ -21,6 +21,11 @@ type IAppointmentCRUDQuery interface {
 	IQueryService
 }
 
+type IProductCRUDQuery interface {
+	IProductCRUD
+	IQueryProduct
+}
+
 // IClient interface de CRUD
 type IClientCRUD interface {
 	Create(client *dto.SignInClient) error
