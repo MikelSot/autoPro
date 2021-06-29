@@ -9,35 +9,6 @@ import (
 	"strings"
 )
 
-//func (c *ClientDao) Login(clientdto dto.LoginClient) (model.Client, bool) {
-//	exists, client, _, _ := c.QueryEmailExists(clientdto.Email)
-//	if exists == false {
-//		return client, false
-//	}
-//
-//	pass := []byte(clientdto.Password)
-//	passdb := []byte(client.Password)
-//	err := bcrypt.CompareHashAndPassword(passdb, pass)
-//	if err != nil {
-//		// el error ocurre cuando no coinciden
-//		return model.Client{}, false
-//	}
-//	return client, true
-//}
-//
-
-//func (c *ClientDao) Create(client *model.Client) error {
-//	DB().Create(&client)
-//	return nil
-//}
-//
-//func (c *ClientDao) Update(ID uint, client *model.Client) error {
-//	clientID := model.Client{}
-//	clientID.ID = ID
-//	DB().Model(&clientID).Updates(client)
-//	return nil
-//}
-
 const (
 	errorGenerateToken   = "No se pudo generar el token"
 	errorEmailOrPassword = "El email o contraseña son incorrectos"

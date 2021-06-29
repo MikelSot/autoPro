@@ -2,32 +2,33 @@ package handler
 
 import (
 	"github.com/MikelSot/autoPro/model"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
 const (
-	errorStructService = "Hubo un error con el registro: Registro no permitido a este dominio de Email o la estructura de servicio es inválida"
-	serviceCreated     = "Servicio creado correctamente"
-	updatedService     = "Servicio actualizado correctamente"
-	errorGetAllService = "Hubo un problema al obtener todos los servicios"
+	errorStructPaymentMethod = "Hubo un error con el registro: Registro no permitido a este dominio de Email o la estructura de metodo de pago es inválida"
+	paymentMethodCreated     = "Metodo de pago creado correctamente"
+	updatedPaymentMethod = "Metodo de pago actualizado correctamente"
+	errorPaymentMethodDoesNotExists = "No existe el Metodo de pago seleccionado"
+	errorGetAllPaymentMethod = "Hubo un problema al obtener todos los Metodos de pago"
 )
 
-type serviceHd struct {
-	crudQuery IServiceCRUDQuery
+type paymentMethodHd struct {
+	crud IPaymentMethodCRUD
 }
 
-func NewServiceHd(cq IServiceCRUDQuery) serviceHd {
-	return serviceHd{cq}
+func NewPaymentMethodHd(c IPaymentMethodCRUD) paymentMethodHd {
+	return paymentMethodHd{c}
 }
 
-func (s *serviceHd) create(e echo.Context) error {
-	data := model.Service{}
+func (p *paymentMethodHd) create(e echo.Context) error {
+	data := model.PaymentMethod{}
 	err := e.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructService, nil)
+		resp := newResponse(Error, errorStructPaymentMethod, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
@@ -37,27 +38,27 @@ func (s *serviceHd) create(e echo.Context) error {
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
-	err = s.crudQuery.Create(&data)
+	err = p.crud.Create(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructService, nil)
+		resp := newResponse(Error, errorStructPaymentMethod, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	resp := newResponse(Message, serviceCreated, nil)
+	resp := newResponse(Message, paymentMethodCreated, nil)
 	return e.JSON(http.StatusCreated, resp)
 }
 
-func (s *serviceHd) update(e echo.Context) error {
+func (p *paymentMethodHd) update(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
 		res := newResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
-	data := model.Service{}
+	data := model.PaymentMethod{}
 	err = e.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructService, nil)
+		resp := newResponse(Error, errorStructPaymentMethod, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
@@ -67,26 +68,26 @@ func (s *serviceHd) update(e echo.Context) error {
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
-	err = s.crudQuery.Update(uint8(ID), &data)
+	err = p.crud.Update(uint8(ID), &data)
 	if err != nil {
-		resp := newResponse(Error, errorStructService, nil)
+		resp := newResponse(Error, errorStructPaymentMethod, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	resp := newResponse(Message, updatedService, nil)
+	resp := newResponse(Message, updatedPaymentMethod, nil)
 	return e.JSON(http.StatusOK, resp)
 }
 
-func (s *serviceHd) getById(e echo.Context) error {
+func (p *paymentMethodHd) getById(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
 		response := newResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
-	data, err := s.crudQuery.GetByID(uint8(ID))
+	data, err := p.crud.GetByID(uint8(ID))
 	if err != nil {
-		response := newResponse(Error, errorServiceDoesNotExists, nil)
+		response := newResponse(Error, errorPaymentMethodDoesNotExists, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
@@ -94,16 +95,16 @@ func (s *serviceHd) getById(e echo.Context) error {
 	return e.JSON(http.StatusOK, res)
 }
 
-func (s *serviceHd) getAll(e echo.Context) error {
+func (p *paymentMethodHd) getAll(e echo.Context) error {
 	max, err := strconv.Atoi(e.Param("max"))
 	if err != nil {
 		response := newResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
-	data, err := s.crudQuery.GetAll(max)
+	data, err := p.crud.GetAll(max)
 	if err != nil {
-		response := newResponse(Error, errorGetAllService, nil)
+		response := newResponse(Error, errorGetAllPaymentMethod, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
@@ -111,16 +112,16 @@ func (s *serviceHd) getAll(e echo.Context) error {
 	return e.JSON(http.StatusOK, res)
 }
 
-func (s *serviceHd) deleteSoft(e echo.Context) error {
+func (p *paymentMethodHd) deleteSoft(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
 		response := newResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
-	err = s.crudQuery.DeleteSoft(uint8(ID))
+	err = p.crud.DeleteSoft(uint8(ID))
 	if err != nil {
-		response := newResponse(Error, errorServiceDoesNotExists, nil)
+		response := newResponse(Error, errorPaymentMethodDoesNotExists, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 

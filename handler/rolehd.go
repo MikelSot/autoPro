@@ -2,32 +2,33 @@ package handler
 
 import (
 	"github.com/MikelSot/autoPro/model"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
 const (
-	errorStructService = "Hubo un error con el registro: Registro no permitido a este dominio de Email o la estructura de servicio es inválida"
-	serviceCreated     = "Servicio creado correctamente"
-	updatedService     = "Servicio actualizado correctamente"
-	errorGetAllService = "Hubo un problema al obtener todos los servicios"
+	roleCreated            = "Role creado correctamente"
+	updatedRole            = "Role actualizado correctamente"
+	errorStructRole        = "Hubo un error con el registro: Registro no permitido a este dominio de Email o la estructura de rol es inválida"
+	errorRoleDoesNotExists = "No existe el Role seleccionado"
+	errorGetAllRole        = "Hubo un problema al obtener todos los roles"
 )
 
-type serviceHd struct {
-	crudQuery IServiceCRUDQuery
+type roleHd struct {
+	crud IRoleCRUD
 }
 
-func NewServiceHd(cq IServiceCRUDQuery) serviceHd {
-	return serviceHd{cq}
+func NewRoleHd(c IRoleCRUD) roleHd {
+	return roleHd{c}
 }
 
-func (s *serviceHd) create(e echo.Context) error {
-	data := model.Service{}
+func (r *roleHd) create(e echo.Context) error {
+	data := model.Role{}
 	err := e.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructService, nil)
+		resp := newResponse(Error, errorStructRole, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
@@ -37,27 +38,27 @@ func (s *serviceHd) create(e echo.Context) error {
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
-	err = s.crudQuery.Create(&data)
+	err = r.crud.Create(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructService, nil)
+		resp := newResponse(Error, errorStructRole, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	resp := newResponse(Message, serviceCreated, nil)
+	resp := newResponse(Message, roleCreated, nil)
 	return e.JSON(http.StatusCreated, resp)
 }
 
-func (s *serviceHd) update(e echo.Context) error {
+func (r *roleHd) update(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
 		res := newResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
-	data := model.Service{}
+	data := model.Role{}
 	err = e.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructService, nil)
+		resp := newResponse(Error, errorStructRole, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
@@ -67,26 +68,26 @@ func (s *serviceHd) update(e echo.Context) error {
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
-	err = s.crudQuery.Update(uint8(ID), &data)
+	err = r.crud.Update(uint8(ID), &data)
 	if err != nil {
-		resp := newResponse(Error, errorStructService, nil)
+		resp := newResponse(Error, errorStructRole, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	resp := newResponse(Message, updatedService, nil)
+	resp := newResponse(Message, updatedRole, nil)
 	return e.JSON(http.StatusOK, resp)
 }
 
-func (s *serviceHd) getById(e echo.Context) error {
+func (r *roleHd) getById(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
 		response := newResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
-	data, err := s.crudQuery.GetByID(uint8(ID))
+	data, err := r.crud.GetByID(uint8(ID))
 	if err != nil {
-		response := newResponse(Error, errorServiceDoesNotExists, nil)
+		response := newResponse(Error, errorRoleDoesNotExists, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
@@ -94,16 +95,16 @@ func (s *serviceHd) getById(e echo.Context) error {
 	return e.JSON(http.StatusOK, res)
 }
 
-func (s *serviceHd) getAll(e echo.Context) error {
+func (r *roleHd) getAll(e echo.Context) error {
 	max, err := strconv.Atoi(e.Param("max"))
 	if err != nil {
 		response := newResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
-	data, err := s.crudQuery.GetAll(max)
+	data, err := r.crud.GetAll(max)
 	if err != nil {
-		response := newResponse(Error, errorGetAllService, nil)
+		response := newResponse(Error, errorGetAllRole, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
@@ -111,16 +112,16 @@ func (s *serviceHd) getAll(e echo.Context) error {
 	return e.JSON(http.StatusOK, res)
 }
 
-func (s *serviceHd) deleteSoft(e echo.Context) error {
+func (r *roleHd) deleteSoft(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
 		response := newResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
-	err = s.crudQuery.DeleteSoft(uint8(ID))
+	err = r.crud.DeleteSoft(uint8(ID))
 	if err != nil {
-		response := newResponse(Error, errorServiceDoesNotExists, nil)
+		response := newResponse(Error, errorRoleDoesNotExists, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 

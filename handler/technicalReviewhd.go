@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/MikelSot/autoPro/model"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
 	"strings"
@@ -101,6 +101,24 @@ func (t *technicalReviewHd) getAll(e echo.Context) error {
 	res := newResponse(Message, ok, data)
 	return e.JSON(http.StatusOK, res)
 }
+
+func (t *technicalReviewHd) deleteSoft(e echo.Context) error {
+	ID, err := strconv.Atoi(e.Param("id"))
+	if err != nil {
+		response := newResponse(Error, errorId, nil)
+		return e.JSON(http.StatusBadRequest, response)
+	}
+
+	err = t.crudQuery.DeleteSoft(uint(ID))
+	if err != nil {
+		response := newResponse(Error, errorReviewDoesNotExists, nil)
+		return e.JSON(http.StatusBadRequest, response)
+	}
+
+	res := newResponse(Message, ok, nil)
+	return e.JSON(http.StatusOK, res)
+}
+
 
 func (t *technicalReviewHd) allReviewClient(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
