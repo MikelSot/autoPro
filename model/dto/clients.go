@@ -26,7 +26,6 @@ type SignInClient struct {
 	Password string `json:"password"`
 }
 
-
 // insertar su informacion o actualizar
 type EditClient struct {
 	ID       uint   `json:"id"`
@@ -39,6 +38,7 @@ type EditClient struct {
 	Phone    string `json:"phone"`
 	Picture  string `json:"picture"`
 	Address  string `json:"address"`
+	Uri      string `json:"uri"`
 }
 
 type DataClient struct {
@@ -54,7 +54,7 @@ type DataClient struct {
 	Picture       string `json:"picture"`
 	Address       string `json:"address"`
 	State         string `json:"state"`
-	Role          uint8 `json:"role"`
+	Role          uint8  `json:"role"`
 }
 
 // Claim contiene los datos que iran en el payload del token
@@ -64,6 +64,6 @@ type Claim struct {
 	LastName string `json:"last_name"`
 	Email    string `json:"email"`
 	State    string `json:"state"`
-	Role     uint8   `json:"role"`
+	Role     uint8  `json:"role"`
 	jwt.StandardClaims
 }

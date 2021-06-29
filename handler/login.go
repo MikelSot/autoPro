@@ -8,9 +8,7 @@ import (
 	"net/http"
 )
 
-const (
-	at = "@"
-)
+
 
 //func (c *ClientDao) Login(clientdto dto.LoginClient) (model.Client, bool) {
 //	exists, client, _, _ := c.QueryEmailExists(clientdto.Email)

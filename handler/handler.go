@@ -5,12 +5,36 @@ import (
 	"github.com/MikelSot/autoPro/model/dto"
 )
 
+
+// IClientCRUDExists embebida
+type IClientCRUDExists interface {
+	IClientCRUD
+	IQueryExists
+}
+
 // IClient interface de CRUD
 type IClientCRUD interface {
 	Create(client *dto.SignInClient) error
 	Update(ID uint, client *dto.EditClient) error
 	GetByID(ID uint) (*model.Client, error)
 	GetAll(max int) (*model.Clients, error)
+	DeleteSoft(ID uint) error
+	DeletePermanent(ID uint) error
+}
+
+// IQueryExists esta interface tiene metodos para validar si ya existe determinado atributo.
+type IQueryExists interface {
+	QueryEmailExists(email string) (bool,model.Client, model.Employee, error)
+	QueryDniExists(dni string) (bool, error)
+	QueryUriExists(uri string) (bool, error)
+}
+
+// IEmployeeCRUD interface crud de empleado
+type IEmployeeCRUD interface {
+	Create(employee *model.Employee) error
+	Update(ID uint, employee *model.Employee) error
+	GetByID(ID uint) (*model.Employee, error)
+	GetAll(max int) (*model.Employees, error)
 	DeleteSoft(ID uint) error
 	DeletePermanent(ID uint) error
 }
@@ -46,13 +70,6 @@ type IQueryBlog interface {
 	AllBlogEmployee(ID uint, max int) (*model.Blogs, error)
 }
 
-// IQueryExists esta interface tiene metodos para validar si ya existe determinado atributo.
-type IQueryExists interface {
-	QueryEmailExists(email string) (bool,model.Client, model.Employee, error)
-	QueryDniExists(dni string) (bool, error)
-	QueryUriExists(uri string) (bool, error)
-}
-
 // ICommentCRUD interface crud de comentarios
 type ICommentCRUD interface {
 	Create(comment *model.Comment) error
@@ -64,16 +81,6 @@ type ICommentCRUD interface {
 type IQueryComment interface {
 	AllCommentBlog(ID, max int) (*dto.CommentClients, error) // ID blog
 	AllCommentProduct(ID, max int) (*dto.CommentClients, error) // ID product
-}
-
-// IEmployeeCRUD interface crud de empleado
-type IEmployeeCRUD interface {
-	Create(employee *model.Employee) error
-	Update(ID uint, employee *model.Employee) error
-	GetByID(ID uint) (*model.Employee, error)
-	GetAll(max int) (*model.Employees, error)
-	DeleteSoft(ID uint) error
-	DeletePermanent(ID uint) error
 }
 
 

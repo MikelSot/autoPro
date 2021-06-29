@@ -1,7 +1,6 @@
 package database
 
 import (
-	"errors"
 	"github.com/MikelSot/autoPro/model"
 )
 
@@ -56,31 +55,28 @@ func (e *EmployeeDao) DeletePermanent(ID uint) error {
 }
 
 func (e *EmployeeDao) QueryEmailExists(email string) (bool, model.Client, model.Employee, error) {
-	const  ExistsEmail = "Este Email ya existe EMPLEADO"
 	employee := model.Employee{}
 	values := DB().Select("Email").Find(&employee, "email = ?", email)
 	if values.RowsAffected != ZeroRowsAffected {
-		return true,model.Client{} ,model.Employee{} ,errors.New(ExistsEmail)
+		return true,model.Client{} ,model.Employee{} ,nil
 	}
 	return false,model.Client{},model.Employee{},nil
 }
 
 func (e *EmployeeDao) QueryDniExists(dni string) (bool, error) {
-	const  ExistsDni = "El DNI ya existe EMPLEADO"
 	employee := model.Employee{}
 	values := DB().Select("Email").Find(&employee, "dni = ?", dni)
 	if values.RowsAffected != ZeroRowsAffected {
-		return true, errors.New(ExistsDni)
+		return true, nil
 	}
 	return false,nil
 }
 
 func (e *EmployeeDao) QueryUriExists(uri string) (bool, error) {
-	const  ExistsUri = "El DNI ya existe EMPLEADO"
 	employee := model.Employee{}
 	values := DB().Select("Uri").Find(&employee, "uri = ?", uri)
 	if values.RowsAffected != ZeroRowsAffected {
-		return true, errors.New(ExistsUri)
+		return true, nil
 	}
 	return false,nil
 }
