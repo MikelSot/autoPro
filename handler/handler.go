@@ -22,15 +22,10 @@ type IEmployeeCRUDExists interface {
 type IAppointmentCRUDQuery interface {
 	IAppointmentCRUD
 	IQueryAppointment
-	// en prueba por ahora
-	IQueryWorkshop
-	IQueryService
 }
 
 type IServiceCRUDQuery interface {
 	IServiceCRUD
-	// esto esta ligado a lo anterior
-	IQueryService
 }
 
 type IProductCRUDQuery interface {
@@ -104,6 +99,8 @@ type IAppointmentCRUD interface {
 type IQueryAppointment interface {
 	AllOrderAttentionAvailable() (map[int]string, error)
 	AllAppointmentClient(ID uint, max int) (*model.Appointments, error)
+	QueryWorkshopExists(name string) (bool, error)
+	QueryServiceExists(name string) (bool, error)
 }
 
 // IBlogCRUD interface drud de blog
@@ -210,11 +207,6 @@ type IServiceCRUD interface {
 	DeletePermanent(ID uint8) error
 }
 
-// IQueryProduct interface de consulta de producto
-type IQueryService interface {
-	QueryServiceExists(name string) (bool, error)
-}
-
 // ITechnicalReviewCRUD interface de revicion tecnica
 type ITechnicalReviewCRUD interface {
 	Create(review *model.TechnicalReview) error
@@ -238,9 +230,4 @@ type IWorkshopCRUD interface {
 	GetAll(max int) (*model.Workshops, error)
 	DeleteSoft(ID uint8) error
 	DeletePermanent(ID uint8) error
-}
-
-// IQueryProduct interface de consulta de producto
-type IQueryWorkshop interface {
-	QueryWorkshopExists(name string) (bool, error)
 }

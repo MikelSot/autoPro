@@ -20,7 +20,7 @@ type AppointmentDao struct {
 	appointmentDao model.Appointment
 }
 
-func NewApointmentDao() AppointmentDao {
+func NewAppointmentDao() AppointmentDao {
 	return AppointmentDao{}
 }
 
@@ -93,6 +93,23 @@ func (a *AppointmentDao) AllAppointmentClient(ID uint, max int) (*model.Appointm
 	return &appointments, nil
 }
 
+func (a *AppointmentDao) QueryServiceExists(name string) (bool, error) {
+	service := model.Service{}
+	values := DB().Limit(1).Select("name").Find(&service, "name = ?", name)
+	if values.RowsAffected != ZeroRowsAffected {
+		return true, nil
+	}
+	return false, nil
+}
+
+func (a *AppointmentDao) QueryWorkshopExists(name string) (bool, error) {
+	workshop := model.Workshop{}
+	values := DB().Limit(1).Select("name").Find(&workshop, "name = ?", name)
+	if values.RowsAffected != ZeroRowsAffected {
+		return true, nil
+	}
+	return false, nil
+}
 
 
 // signValid firltra el N° que estan disponibles para la cita

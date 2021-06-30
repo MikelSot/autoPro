@@ -36,7 +36,7 @@ func NewAppointmentHd(cq IAppointmentCRUDQuery) appointmentHd {
 	return appointmentHd{cq}
 }
 
-func (a *appointmentHd) Createreate(e echo.Context) error {
+func (a *appointmentHd) Create(e echo.Context) error {
 	data := model.Appointment{}
 	err := e.Bind(&data)
 	if err != nil {

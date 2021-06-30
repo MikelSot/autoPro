@@ -15,13 +15,30 @@ func StartServer()  {
 	}
 
 	database.Migration()
-
-	// a qui hacemos nuestra newclientdao depende
+	client := database.NewClientDao()
+	product := database.NewProductDao()
+	service := database.NewServiceDao()
+	workshop := database.NewWorkshopDao()
+	blog := database.NewBloDao()
+	invoice := database.NewInvoiceDao()
+	invoiceItem := database.NewInvoiceItemDao()
+	employee := database.NewEmployeeDao()
+	comment := database.NewCommentDao()
+	technicalReview := database.NewTechnicalReviewDao()
+	appointment := database.NewAppointmentDao()
 
 	e := echo.New()
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
-	// aui traermos las rutas llamamos a esas funciones
+
+	Login(e, &client)
+	Home(e, &product,&employee, &service, &workshop)
+	Client(e, &client)
+	Blog(e,&blog, &comment)
+	Invoice(e, &invoice,&invoiceItem)
+	Product(e, &product)
+	AppointmentReview(e, &technicalReview, &appointment)
+
 
 	err = e.Start(":8080")
 	if err != nil {
