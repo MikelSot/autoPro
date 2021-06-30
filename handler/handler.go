@@ -12,6 +12,12 @@ type IClientCRUDExists interface {
 	IQueryExists
 }
 
+// IClientCRUDExists embebida de empleado
+type IEmployeeCRUDExists interface {
+	IEmployeeCRUD
+	IQueryExists
+}
+
 // IClientCRUDExists embebida de cita
 type IAppointmentCRUDQuery interface {
 	IAppointmentCRUD
@@ -37,6 +43,26 @@ type ITechnicalReviewCRUDQuery interface {
 	IQueryReview
 }
 
+type IBlogCRUDQuery interface {
+	IBlogCRUD
+	IQueryBlog
+}
+
+type ICommentCRUDQuery interface {
+	ICommentCRUD
+	IQueryComment
+}
+
+type IInvoiceCRUDQuery interface {
+	IInvoiceCRUD
+	IQueryInvoice
+}
+
+type IInvoiceItemCRUDQuery interface {
+	IInvoiceItemCRUD
+	IQueryInvoiceItem
+}
+
 // IClient interface de CRUD
 type IClientCRUD interface {
 	Create(client *dto.SignInClient) error
@@ -58,7 +84,7 @@ type IQueryExists interface {
 type IEmployeeCRUD interface {
 	Create(employee *model.Employee) error
 	Update(ID uint, employee *model.Employee) error
-	GetByID(ID uint) (*model.Employee, error)
+	GetByID(ID uint) (*dto.AllDataEmployee, error)
 	GetAll(max int) (*model.Employees, error)
 	DeleteSoft(ID uint) error
 	DeletePermanent(ID uint) error

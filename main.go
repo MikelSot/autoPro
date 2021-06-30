@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-	"time"
 )
 
 func main() {
@@ -23,18 +22,6 @@ func main() {
 	// aui traermos las rutas llamamos a esas funciones
 
 
-
-	now := time.Now()
-	me := now.Add(time.Hour * 24 * 7)
-	ahora := now.Format("2006-01-02")
-	ahorame := me.Format("2006-01-02")
-	//dateString := me.Format("2006-01-02")
-
-	if ahora < ahorame {
-		fmt.Println("no son iguales p")
-	}
-
-	fmt.Println(ahorame)
 }
 
 type comer struct {

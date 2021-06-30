@@ -66,14 +66,5 @@ func (i InvoiceDao) AllInvoiceWorkshop(ID uint, max int) (*dto.InvoiceWorkshops,
 		"EmployeeID",
 		"PaymentMethodID",
 	).Find( "workshop_id = ?", ID).Scan(&invoices)
-
-	//invoices := model.Invoices{}
-	//DB().Limit(max).Select(
-	//	"Ruc",
-	//	"Status",
-	//	"InvoiceDate",
-	//	"EmployeeID",
-	//	"PaymentMethodID",
-	//).Find(&invoices, "workshop_id = ?", ID)
 	return &invoices, nil
 }
