@@ -24,122 +24,122 @@ func NewTechnicalReviewHd(cq ITechnicalReviewCRUDQuery) technicalReviewHd {
 	return technicalReviewHd{cq}
 }
 
-func (t *technicalReviewHd) create(e echo.Context) error {
+func (t *technicalReviewHd) Create(e echo.Context) error {
 	data := model.TechnicalReview{}
 	err := e.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructReview, nil)
+		resp := NewResponse(Error, errorStructReview, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
 	areDataValidTechnicalReview(&data)
 	err = t.crudQuery.Create(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructReview, nil)
+		resp := NewResponse(Error, errorStructReview, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	resp := newResponse(Message, reviewCreated, nil)
+	resp := NewResponse(Message, reviewCreated, nil)
 	return e.JSON(http.StatusCreated, resp)
 }
 
-func (t *technicalReviewHd) update(e echo.Context) error {
+func (t *technicalReviewHd) Update(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	data := model.TechnicalReview{}
 	err = e.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructReview, nil)
+		resp := NewResponse(Error, errorStructReview, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
 	areDataValidTechnicalReview(&data)
 	err = t.crudQuery.Update(uint(ID), &data)
 	if err != nil {
-		resp := newResponse(Error, errorStructReview, nil)
+		resp := NewResponse(Error, errorStructReview, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	resp := newResponse(Message, updatedReview, nil)
+	resp := NewResponse(Message, updatedReview, nil)
 	return e.JSON(http.StatusOK, resp)
 }
 
-func (t *technicalReviewHd) getById(e echo.Context) error {
+func (t *technicalReviewHd) GetById(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		response := newResponse(Error, errorId, nil)
+		response := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
 	data, err := t.crudQuery.GetByID(uint(ID))
 	if err != nil {
-		response := newResponse(Error, errorReviewDoesNotExists, nil)
+		response := NewResponse(Error, errorReviewDoesNotExists, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
-	res := newResponse(Message, ok, data)
+	res := NewResponse(Message, ok, data)
 	return e.JSON(http.StatusOK, res)
 }
 
-func (t *technicalReviewHd) getAll(e echo.Context) error {
+func (t *technicalReviewHd) GetAll(e echo.Context) error {
 	max, err := strconv.Atoi(e.Param("max"))
 	if err != nil {
-		response := newResponse(Error, errorId, nil)
+		response := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
 	data, err := t.crudQuery.GetAll(max)
 	if err != nil {
-		response := newResponse(Error, errorGetAllReview, nil)
+		response := NewResponse(Error, errorGetAllReview, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
-	res := newResponse(Message, ok, data)
+	res := NewResponse(Message, ok, data)
 	return e.JSON(http.StatusOK, res)
 }
 
-func (t *technicalReviewHd) deleteSoft(e echo.Context) error {
+func (t *technicalReviewHd) DeleteSoft(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		response := newResponse(Error, errorId, nil)
+		response := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
 	err = t.crudQuery.DeleteSoft(uint(ID))
 	if err != nil {
-		response := newResponse(Error, errorReviewDoesNotExists, nil)
+		response := NewResponse(Error, errorReviewDoesNotExists, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
-	res := newResponse(Message, ok, nil)
+	res := NewResponse(Message, ok, nil)
 	return e.JSON(http.StatusOK, res)
 }
 
 
-func (t *technicalReviewHd) allReviewClient(e echo.Context) error {
+func (t *technicalReviewHd) AllReviewClient(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		response := newResponse(Error, errorId, nil)
+		response := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
 	max, err := strconv.Atoi(e.Param("max"))
 	if err != nil {
-		response := newResponse(Error, errorId, nil)
+		response := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
 	data, err := t.crudQuery.AllReviewClient(uint(ID) ,max)
 	if err != nil {
-		response := newResponse(Error, errorGetAllReview, nil)
+		response := NewResponse(Error, errorGetAllReview, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
-	res := newResponse(Message, ok, data)
+	res := NewResponse(Message, ok, data)
 	return e.JSON(http.StatusOK, res)
 }
 

@@ -24,107 +24,107 @@ func NewPaymentMethodHd(c IPaymentMethodCRUD) paymentMethodHd {
 	return paymentMethodHd{c}
 }
 
-func (p *paymentMethodHd) create(e echo.Context) error {
+func (p *paymentMethodHd) Create(e echo.Context) error {
 	data := model.PaymentMethod{}
 	err := e.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructPaymentMethod, nil)
+		resp := NewResponse(Error, errorStructPaymentMethod, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
 	data.Name = strings.TrimSpace(data.Name)
 	if !isEmpty(data.Name) {
-		resp := newResponse(Error, errorContent, nil)
+		resp := NewResponse(Error, errorContent, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
 	err = p.crud.Create(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructPaymentMethod, nil)
+		resp := NewResponse(Error, errorStructPaymentMethod, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	resp := newResponse(Message, paymentMethodCreated, nil)
+	resp := NewResponse(Message, paymentMethodCreated, nil)
 	return e.JSON(http.StatusCreated, resp)
 }
 
-func (p *paymentMethodHd) update(e echo.Context) error {
+func (p *paymentMethodHd) Update(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	data := model.PaymentMethod{}
 	err = e.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructPaymentMethod, nil)
+		resp := NewResponse(Error, errorStructPaymentMethod, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
 	data.Name = strings.TrimSpace(data.Name)
 	if !isEmpty(data.Name) {
-		resp := newResponse(Error, errorContent, nil)
+		resp := NewResponse(Error, errorContent, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
 	err = p.crud.Update(uint8(ID), &data)
 	if err != nil {
-		resp := newResponse(Error, errorStructPaymentMethod, nil)
+		resp := NewResponse(Error, errorStructPaymentMethod, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	resp := newResponse(Message, updatedPaymentMethod, nil)
+	resp := NewResponse(Message, updatedPaymentMethod, nil)
 	return e.JSON(http.StatusOK, resp)
 }
 
-func (p *paymentMethodHd) getById(e echo.Context) error {
+func (p *paymentMethodHd) GetById(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		response := newResponse(Error, errorId, nil)
+		response := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
 	data, err := p.crud.GetByID(uint8(ID))
 	if err != nil {
-		response := newResponse(Error, errorPaymentMethodDoesNotExists, nil)
+		response := NewResponse(Error, errorPaymentMethodDoesNotExists, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
-	res := newResponse(Message, ok, data)
+	res := NewResponse(Message, ok, data)
 	return e.JSON(http.StatusOK, res)
 }
 
-func (p *paymentMethodHd) getAll(e echo.Context) error {
+func (p *paymentMethodHd) GetAll(e echo.Context) error {
 	max, err := strconv.Atoi(e.Param("max"))
 	if err != nil {
-		response := newResponse(Error, errorId, nil)
+		response := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
 	data, err := p.crud.GetAll(max)
 	if err != nil {
-		response := newResponse(Error, errorGetAllPaymentMethod, nil)
+		response := NewResponse(Error, errorGetAllPaymentMethod, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
-	res := newResponse(Message, ok, data)
+	res := NewResponse(Message, ok, data)
 	return e.JSON(http.StatusOK, res)
 }
 
-func (p *paymentMethodHd) deleteSoft(e echo.Context) error {
+func (p *paymentMethodHd) DeleteSoft(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		response := newResponse(Error, errorId, nil)
+		response := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
 	err = p.crud.DeleteSoft(uint8(ID))
 	if err != nil {
-		response := newResponse(Error, errorPaymentMethodDoesNotExists, nil)
+		response := NewResponse(Error, errorPaymentMethodDoesNotExists, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
-	res := newResponse(Message, ok, nil)
+	res := NewResponse(Message, ok, nil)
 	return e.JSON(http.StatusOK, res)
 }

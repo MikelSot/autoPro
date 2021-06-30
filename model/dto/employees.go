@@ -23,3 +23,18 @@ type AllDataEmployee struct {
 	BossID     uint      `json:"boss_id"`
 	RoleID     uint8     `json:"role_id"`
 }
+
+
+type DataEmployeeHome struct {
+	ID         uint      `json:"id"`
+	Name       string    `json:"name"`
+	LastName   string    `json:"last_name"`
+	Email      string    `json:"email"`
+	Picture    string    `json:"picture"`
+	Uri        string    `json:"uri"`
+	Workdays   string    `json:"workdays"`
+	Profession string    `json:"profession"`
+	RoleID     uint8     `json:"role_id"`
+}
+
+type DataEmployeeHomes []*DataEmployeeHome

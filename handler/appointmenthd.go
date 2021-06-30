@@ -36,11 +36,11 @@ func NewAppointmentHd(cq IAppointmentCRUDQuery) appointmentHd {
 	return appointmentHd{cq}
 }
 
-func (a *appointmentHd) create(e echo.Context) error {
+func (a *appointmentHd) Createreate(e echo.Context) error {
 	data := model.Appointment{}
 	err := e.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructAppointment, nil)
+		resp := NewResponse(Error, errorStructAppointment, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
@@ -51,25 +51,25 @@ func (a *appointmentHd) create(e echo.Context) error {
 
 	err = a.crudQuery.Create(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructAppointment, nil)
+		resp := NewResponse(Error, errorStructAppointment, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	resp := newResponse(Message, appointmentCreated, nil)
+	resp := NewResponse(Message, appointmentCreated, nil)
 	return e.JSON(http.StatusCreated, resp)
 }
 
-func (a *appointmentHd) update(e echo.Context) error {
+func (a *appointmentHd) Update(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	data := model.Appointment{}
 	err = e.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructAppointment, nil)
+		resp := NewResponse(Error, errorStructAppointment, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
@@ -80,86 +80,78 @@ func (a *appointmentHd) update(e echo.Context) error {
 
 	err = a.crudQuery.Update(uint(ID), &data)
 	if err != nil {
-		resp := newResponse(Error, errorStructAppointment, nil)
+		resp := NewResponse(Error, errorStructAppointment, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	resp := newResponse(Message, updatedAppointment, nil)
+	resp := NewResponse(Message, updatedAppointment, nil)
 	return e.JSON(http.StatusOK, resp)
 }
 
-//func (a *appointmentHd) getById(e echo.Context) error {
-//	ID, err := strconv.Atoi(e.Param("id"))
-//	if err != nil {
-//		res := newResponse(Error, errorId, nil)
-//		return e.JSON(http.StatusBadRequest, res)
-//	}
-//}
-
-func (a *appointmentHd) getAll(e echo.Context) error {
+func (a *appointmentHd) GetAll(e echo.Context) error {
 	max, err := strconv.Atoi(e.Param("max"))
 	if err != nil {
-		response := newResponse(Error, errorId, nil)
+		response := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
 	data, err := a.crudQuery.GetAll(max)
 	if err != nil {
-		response := newResponse(Error, errorGetAllAppointment, nil)
+		response := NewResponse(Error, errorGetAllAppointment, nil)
 		return e.JSON(http.StatusInternalServerError, response)
 	}
 
-	res := newResponse(Message, ok, data)
+	res := NewResponse(Message, ok, data)
 	return e.JSON(http.StatusOK, res)
 }
 
-func (a *appointmentHd) deleteSoft(e echo.Context) error {
+func (a *appointmentHd) DeleteSoft(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	err = a.crudQuery.DeleteSoft(uint(ID))
 	if err != nil {
-		response := newResponse(Error, errorAppointmentIDDoesNotExist, nil)
+		response := NewResponse(Error, errorAppointmentIDDoesNotExist, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
-	res := newResponse(Message, ok, nil)
+	res := NewResponse(Message, ok, nil)
 	return e.JSON(http.StatusOK, res)
 }
 
-func (a *appointmentHd) allOrderAttentionAvailable(e echo.Context) error {
+func (a *appointmentHd) AllOrderAttentionAvailable(e echo.Context) error {
 	available, err := a.crudQuery.AllOrderAttentionAvailable()
 	if err != nil {
-		response := newResponse(Error, attentionOrderError, nil)
+		response := NewResponse(Error, attentionOrderError, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
-	res := newResponse(Message, ok, available)
+	res := NewResponse(Message, ok, available)
 	return e.JSON(http.StatusOK, res)
 }
 
-func (a *appointmentHd) allAppointmentClient(e echo.Context) error {
+func (a *appointmentHd) AllAppointmentClient(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	max, err := strconv.Atoi(e.Param("max"))
 	if err != nil {
-		res := newResponse(Error, errorGetAllAppointment, nil)
+		res := NewResponse(Error, errorGetAllAppointment, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 
 	appointments, err := a.crudQuery.AllAppointmentClient(uint(ID), max)
 	if err != nil {
-		response := newResponse(Error, errorAppointmentIDDoesNotExist, nil)
+		response := NewResponse(Error, errorAppointmentIDDoesNotExist, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
-	res := newResponse(Message, ok, appointments)
+	res := NewResponse(Message, ok, appointments)
 	return e.JSON(http.StatusOK, res)
 }
 
@@ -171,27 +163,27 @@ func areDataValidAppointment(data *model.Appointment, a appointmentHd, e echo.Co
 	data.VehicleType = strings.TrimSpace(data.VehicleType)
 
 	if !isEmpty(data.Workshop) || !isEmpty(data.Service) || !isNumber(data.OrderAttention) || !isStringVehicle(data.VehicleType) {
-		resp := newResponse(Error, errorContent, nil)
+		resp := NewResponse(Error, errorContent, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
 	if exists, _ := a.crudQuery.QueryServiceExists(data.Service); !exists {
-		resp := newResponse(Error, errorServiceDoesNotExists, nil)
+		resp := NewResponse(Error, errorServiceDoesNotExists, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
 	if exists, _ := a.crudQuery.QueryWorkshopExists(data.Workshop); !exists {
-		resp := newResponse(Error, errorWorkshopDoesNotExists, nil)
+		resp := NewResponse(Error, errorWorkshopDoesNotExists, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
 	if data.DateHour.Hour() > maxHour || data.DateHour.Hour() < minHour {
-		resp := newResponse(Error, errorHour, nil)
+		resp := NewResponse(Error, errorHour, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
 	if !isDateValid(data.DateHour) {
-		resp := newResponse(Error, errorDate, nil)
+		resp := NewResponse(Error, errorDate, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 	return nil

@@ -18,27 +18,27 @@ type login struct {
 	crudExists IClientCRUDExists
 }
 
-func newLogin(ce IClientCRUDExists) login {
+func NewLogin(ce IClientCRUDExists) login {
 	return login{ce}
 }
 
-func (l *login) login(e echo.Context) error {
+func (l *login) Login(e echo.Context) error {
 	data := dto.LoginClient{}
 	err := e.Bind(&data) // de json a estructura
 	if err != nil {
-		resp := newResponse(Error, errorEmailOrPassword, nil)
+		resp := NewResponse(Error, errorEmailOrPassword, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
 	data.Email = strings.TrimSpace(data.Email)
 	if !isEmail(data.Email) {
-		resp := newResponse(Error, errorEmailIncorrect, nil)
+		resp := NewResponse(Error, errorEmailIncorrect, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
 	exists, client, _, _ := l.crudExists.QueryEmailExists(data.Email)
 	if !exists {
-		resp := newResponse(Error, errorEmailIncorrect, nil)
+		resp := NewResponse(Error, errorEmailIncorrect, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
@@ -46,7 +46,7 @@ func (l *login) login(e echo.Context) error {
 	passDB := []byte(client.Password)
 	err = bcrypt.CompareHashAndPassword(passDB, pass)
 	if err != nil {
-		resp := newResponse(Error, errorEmailOrPassword, nil)
+		resp := NewResponse(Error, errorEmailOrPassword, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
@@ -66,10 +66,10 @@ func (l *login) login(e echo.Context) error {
 	}
 	token, err := jwt.GenerateToken(&dataClient)
 	if err != nil {
-		resp := newResponse(Error, errorGenerateToken, nil)
+		resp := NewResponse(Error, errorGenerateToken, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	resp := newResponse(Message, ok, token)
+	resp := NewResponse(Message, ok, token)
 	return e.JSON(http.StatusOK, resp)
 }

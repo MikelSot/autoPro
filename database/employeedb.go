@@ -59,6 +59,27 @@ func (e *EmployeeDao) DeletePermanent(ID uint) error {
 	return nil
 }
 
+func (e *EmployeeDao) DataEmployeeHome(max int) (*dto.DataEmployeeHomes,error) {
+	if  max < MaxGetAll {
+		max = MaxGetAll
+	}
+	employees :=dto.DataEmployeeHomes{}
+	DB().Table("clients").Limit(max).Select(
+		"c.id",
+		"c.name",
+		"c.last_name",
+		"c.email",
+		"c.picture",
+		"c.uri",
+		"e.workdays",
+		"e.profession",
+		"e.role_id",
+	).Joins(
+		"INNER JOIN employees e on c.email = e.email",
+	).Scan(&employees)
+	return &employees, nil
+}
+
 func (e *EmployeeDao) QueryEmailExists(email string) (bool, model.Client, model.Employee, error) {
 	employee := model.Employee{}
 	values := DB().Select("Email").Find(&employee, "email = ?", email)

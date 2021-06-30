@@ -11,7 +11,7 @@ type response struct {
 	Data        interface{} `json:"data"`
 }
 
-func newResponse(messageType string, message string, data interface{}) response {
+func NewResponse(messageType string, message string, data interface{}) response {
 	return response{
 		messageType,
 		message,

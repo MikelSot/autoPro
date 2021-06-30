@@ -88,6 +88,7 @@ type IEmployeeCRUD interface {
 	GetAll(max int) (*model.Employees, error)
 	DeleteSoft(ID uint) error
 	DeletePermanent(ID uint) error
+	DataEmployeeHome(max int) (*dto.DataEmployeeHomes,error)
 }
 
 // IAppointmentCRUD interface crud de citas

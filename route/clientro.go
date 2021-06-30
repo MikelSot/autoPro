@@ -5,6 +5,6 @@ import (
 	"github.com/labstack/echo"
 )
 
-func Client(e *echo.Echo, crud handler.IClientCRUD)  {
-
+func clientRo(e *echo.Echo, crud handler.IClientCRUD)  {
+	//hd :=
 }

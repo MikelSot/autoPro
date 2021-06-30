@@ -19,3 +19,8 @@ func Authentication(fun echo.HandlerFunc) echo.HandlerFunc {
 		return fun(c)
 	}
 }
+
+// redireccionar si esta autenticado (al home)
+
+
+// un midlleware para preguntar si es admin

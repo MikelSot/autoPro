@@ -22,88 +22,88 @@ func NewInvoiceItemHd(cq IInvoiceItemCRUDQuery) invoiceItemHd {
 	return invoiceItemHd{cq}
 }
 
-func (i *invoiceItemHd) create(e echo.Context) error {
+func (i *invoiceItemHd) Create(e echo.Context) error {
 	data := model.InvoiceItem{}
 	err := e.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructInvoiceItem, nil)
+		resp := NewResponse(Error, errorStructInvoiceItem, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
 	err = i.crudQuery.Create(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructInvoiceItem, nil)
+		resp := NewResponse(Error, errorStructInvoiceItem, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
 	// corregir stock de productos cuando se elija uno
 
-	resp := newResponse(Message, invoiceItemCreated, nil)
+	resp := NewResponse(Message, invoiceItemCreated, nil)
 	return e.JSON(http.StatusCreated, resp)
 }
 
-func (i *invoiceItemHd) update(e echo.Context) error {
+func (i *invoiceItemHd) Update(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	data := model.InvoiceItem{}
 	err = e.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructInvoiceItem, nil)
+		resp := NewResponse(Error, errorStructInvoiceItem, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
 	err = i.crudQuery.Update(uint(ID), &data)
 	if err != nil {
-		resp := newResponse(Error, errorStructInvoiceItem, nil)
+		resp := NewResponse(Error, errorStructInvoiceItem, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
 	// corregir stock de productos cuando sea actualizado y si es menor o mayor corregir
 
-	resp := newResponse(Message, updatedInvoiceItem, nil)
+	resp := NewResponse(Message, updatedInvoiceItem, nil)
 	return e.JSON(http.StatusOK, resp)
 }
 
-func (i *invoiceItemHd) deleteSoft(e echo.Context) error {
+func (i *invoiceItemHd) DeleteSoft(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	err = i.crudQuery.DeleteSoft(uint(ID))
 	if err != nil {
-		res := newResponse(Error, errorInvoiceItemDoesNotExists, nil)
+		res := NewResponse(Error, errorInvoiceItemDoesNotExists, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
-	res := newResponse(Message, ok,nil)
+	res := NewResponse(Message, ok,nil)
 	return e.JSON(http.StatusOK, res)
 }
 
-func (i *invoiceItemHd) allInvoiceItemInvoice(e echo.Context) error {
+func (i *invoiceItemHd) AllInvoiceItemInvoice(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	max, err := strconv.Atoi(e.Param("max"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	data ,err := i.crudQuery.AllInvoiceItemInvoice(ID, max)
 	if err != nil {
-		res := newResponse(Error, errorInvoiceItemDoesNotExists, nil)
+		res := NewResponse(Error, errorInvoiceItemDoesNotExists, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
-	res := newResponse(Message, ok,data)
+	res := NewResponse(Message, ok,data)
 	return e.JSON(http.StatusOK, res)
 }

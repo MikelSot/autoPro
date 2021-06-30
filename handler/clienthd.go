@@ -37,11 +37,11 @@ func NewClientHd(ce IClientCRUDExists) clientHd {
 	return clientHd{ce}
 }
 
-func (c *clientHd) singIn(e echo.Context) error {
+func (c *clientHd) SingIn(e echo.Context) error {
 	data := dto.SignInClient{}
 	err := e.Bind(&data) // de json a estructura
 	if err != nil {
-		resp := newResponse(Error, errorStruct, nil)
+		resp := NewResponse(Error, errorStruct, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
@@ -51,26 +51,26 @@ func (c *clientHd) singIn(e echo.Context) error {
 	}
 	err = c.crudExists.Create(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStruct, nil)
+		resp := NewResponse(Error, errorStruct, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
 	// puede o no ir la generacion de un token
-	resp := newResponse(Message, clientCreated, nil)
+	resp := NewResponse(Message, clientCreated, nil)
 	return e.JSON(http.StatusCreated, resp)
 }
 
-func (c *clientHd) editClient(e echo.Context) error {
+func (c *clientHd) EditClient(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	data := dto.EditClient{}
 	err = e.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStruct, nil)
+		resp := NewResponse(Error, errorStruct, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
@@ -87,63 +87,63 @@ func (c *clientHd) editClient(e echo.Context) error {
 
 	err = c.crudExists.Update(uint(ID), &data)
 	if err != nil {
-		resp := newResponse(Error, errorStruct, nil)
+		resp := NewResponse(Error, errorStruct, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	resp := newResponse(Message, updatedClient, nil)
+	resp := NewResponse(Message, updatedClient, nil)
 	return e.JSON(http.StatusOK, resp)
 	return nil
 }
 
-func (c *clientHd) getById(e echo.Context) error {
+func (c *clientHd) GetById(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		response := newResponse(Error, errorId, nil)
+		response := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
 	data, err := c.crudExists.GetByID(uint(ID))
 	if err != nil {
-		response := newResponse(Error, errorClientIDDoesNotExist, nil)
+		response := NewResponse(Error, errorClientIDDoesNotExist, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
-	res := newResponse(Message, ok, data)
+	res := NewResponse(Message, ok, data)
 	return e.JSON(http.StatusOK, res)
 }
 
-func (c *clientHd) getAll(e echo.Context) error{
+func (c *clientHd) GetAll(e echo.Context) error{
 	max, err := strconv.Atoi(e.Param("max"))
 	if err != nil {
-		response := newResponse(Error, errorId, nil)
+		response := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
 	data, err := c.crudExists.GetAll(max)
 	if err != nil {
-		response := newResponse(Error, errorGetAll, nil)
+		response := NewResponse(Error, errorGetAll, nil)
 		return e.JSON(http.StatusInternalServerError, response)
 	}
 
-	res := newResponse(Message, ok, data)
+	res := NewResponse(Message, ok, data)
 	return e.JSON(http.StatusOK, res)
 }
 
-func (c *clientHd) deleteSoft(e echo.Context) error {
+func (c *clientHd) DeleteSoft(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		response := newResponse(Error, errorId, nil)
+		response := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
 	err = c.crudExists.DeleteSoft(uint(ID))
 	if err != nil {
-		response := newResponse(Error, errorClientIDDoesNotExist, nil)
+		response := NewResponse(Error, errorClientIDDoesNotExist, nil)
 		return e.JSON(http.StatusBadRequest, response)
 	}
 
-	res := newResponse(Message, ok, nil)
+	res := NewResponse(Message, ok, nil)
 	return e.JSON(http.StatusOK, res)
 }
 
@@ -153,18 +153,18 @@ func areDataValidClient(data *dto.SignInClient, c clientHd, e echo.Context) erro
 	data.LastName = strings.TrimSpace(data.LastName)
 
 	if !isEmail(data.Email) {
-		resp := newResponse(Error, errorEmailIncorrect, nil)
+		resp := NewResponse(Error, errorEmailIncorrect, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
 	if !isEmpty(data.Name) || !isEmpty(data.LastName) || !isEmptyEmail(data.Email) {
-		resp := newResponse(Error, errorContent, nil)
+		resp := NewResponse(Error, errorContent, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
 	exists, _, _, _ := c.crudExists.QueryEmailExists(strings.TrimSpace(data.Email))
 	if exists {
-		resp := newResponse(Error, errorEmailExists, nil)
+		resp := NewResponse(Error, errorEmailExists, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 	return nil
@@ -184,13 +184,13 @@ func isValidDniOrUriClient(data *dto.EditClient, c clientHd, e echo.Context) err
 
 	r, _ := regexp.Compile(regexDni)
 	if !r.MatchString(dniWithoutSpace) {
-		resp := newResponse(Error, errorLenDni, nil)
+		resp := NewResponse(Error, errorLenDni, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
 	existsDni, _ := c.crudExists.QueryDniExists(dniWithoutSpace)
 	if existsDni {
-		resp := newResponse(Error, errorDniExists, nil)
+		resp := NewResponse(Error, errorDniExists, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 

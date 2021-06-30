@@ -24,11 +24,11 @@ func NewEmployeeHd(ce IEmployeeCRUDExists) employeeHd {
 	return employeeHd{ce}
 }
 
-func (e *employeeHd) create(c echo.Context) error {
+func (e *employeeHd) Create(c echo.Context) error {
 	data := model.Employee{}
 	err := c.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructEmployee, nil)
+		resp := NewResponse(Error, errorStructEmployee, nil)
 		return c.JSON(http.StatusInternalServerError, resp)
 	}
 
@@ -40,25 +40,25 @@ func (e *employeeHd) create(c echo.Context) error {
 	areDataValidEmployee(&data)
 	err = e.crudExists.Create(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructEmployee, nil)
+		resp := NewResponse(Error, errorStructEmployee, nil)
 		return c.JSON(http.StatusInternalServerError, resp)
 	}
 
-	resp := newResponse(Message, employeeCreated, nil)
+	resp := NewResponse(Message, employeeCreated, nil)
 	return c.JSON(http.StatusCreated, resp)
 }
 
-func (e *employeeHd) update(c echo.Context) error {
+func (e *employeeHd) Update(c echo.Context) error {
 	ID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return c.JSON(http.StatusBadRequest, res)
 	}
 
 	data := model.Employee{}
 	err = c.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructEmployee, nil)
+		resp := NewResponse(Error, errorStructEmployee, nil)
 		return c.JSON(http.StatusInternalServerError, resp)
 	}
 
@@ -70,65 +70,83 @@ func (e *employeeHd) update(c echo.Context) error {
 	areDataValidEmployee(&data)
 	err = e.crudExists.Update(uint(ID), &data)
 	if err != nil {
-		resp := newResponse(Error, errorStructEmployee, nil)
+		resp := NewResponse(Error, errorStructEmployee, nil)
 		return c.JSON(http.StatusInternalServerError, resp)
 	}
 
 	// si se cambia el rol a en empleado, tambien que se cambie en el login (al mismo role que se quiera cambiar)
-	resp := newResponse(Message, updatedEmployee, nil)
+	resp := NewResponse(Message, updatedEmployee, nil)
 	return c.JSON(http.StatusOK, resp)
 }
 
-func (e *employeeHd) getById(c echo.Context) error {
+func (e *employeeHd) GetById(c echo.Context) error {
 	ID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		response := newResponse(Error, errorId, nil)
+		response := NewResponse(Error, errorId, nil)
 		return c.JSON(http.StatusBadRequest, response)
 	}
 
 	// aqui tambien podemos devolver (dto) los datos del login (a traves del email consulta), en el database
 	data, err := e.crudExists.GetByID(uint(ID))
 	if err != nil {
-		response := newResponse(Error, errorEmployeeIDDoesNotExist, nil)
+		response := NewResponse(Error, errorEmployeeIDDoesNotExist, nil)
 		return c.JSON(http.StatusBadRequest, response)
 	}
 
-	res := newResponse(Message, ok, data)
+	res := NewResponse(Message, ok, data)
 	return c.JSON(http.StatusOK, res)
 }
 
-func (e *employeeHd) getAll(c echo.Context) error {
+func (e *employeeHd) GetAll(c echo.Context) error {
 	max, err := strconv.Atoi(c.Param("max"))
 	if err != nil {
-		response := newResponse(Error, errorId, nil)
+		response := NewResponse(Error, errorId, nil)
 		return c.JSON(http.StatusBadRequest, response)
 	}
 
 	data, err := e.crudExists.GetAll(max) // lo mismo que el anterior del getByid
 	if err != nil {
-		response := newResponse(Error, errorGetAllEmployee, nil)
+		response := NewResponse(Error, errorGetAllEmployee, nil)
 		return c.JSON(http.StatusInternalServerError, response)
 	}
 
-	res := newResponse(Message, ok, data)
+	res := NewResponse(Message, ok, data)
 	return c.JSON(http.StatusOK, res)
 }
 
-func (e *employeeHd) deleteSoft(c echo.Context) error {
+
+func (e *employeeHd) DataEmployeeHome(c echo.Context) error {
+	max, err := strconv.Atoi(c.Param("max"))
+	if err != nil {
+		response := NewResponse(Error, errorId, nil)
+		return c.JSON(http.StatusBadRequest, response)
+	}
+
+	data, err := e.crudExists.DataEmployeeHome(max)
+	if err != nil {
+		response := NewResponse(Error, errorGetAllEmployee, nil)
+		return c.JSON(http.StatusInternalServerError, response)
+	}
+
+	res := NewResponse(Message, ok, data)
+	return c.JSON(http.StatusOK, res)
+}
+
+func (e *employeeHd) DeleteSoft(c echo.Context) error {
 	ID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		response := newResponse(Error, errorId, nil)
+		response := NewResponse(Error, errorId, nil)
 		return c.JSON(http.StatusBadRequest, response)
 	}
 
 	// si se elimina un empleado que su role cambie a cliente (mismo database)
 	err = e.crudExists.DeleteSoft(uint(ID))
 	if err != nil {
-		response := newResponse(Error, errorEmployeeIDDoesNotExist, nil)
+		response := NewResponse(Error, errorEmployeeIDDoesNotExist, nil)
 		return c.JSON(http.StatusBadRequest, response)
 	}
 
-	res := newResponse(Message, ok, nil)
+	res := NewResponse(Message, ok, nil)
 	return c.JSON(http.StatusOK, res)
 }
 
@@ -136,13 +154,13 @@ func isEmailValidEmployee(data *model.Employee, c employeeHd, e echo.Context) er
 	data.Email = strings.TrimSpace(data.Email)
 
 	if !isEmail(data.Email) {
-		resp := newResponse(Error, errorEmailIncorrect, nil)
+		resp := NewResponse(Error, errorEmailIncorrect, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
 	exists, _, _, _ := c.crudExists.QueryEmailExists(strings.TrimSpace(data.Email))
 	if exists {
-		resp := newResponse(Error, errorEmailExists, nil)
+		resp := NewResponse(Error, errorEmailExists, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 	return nil

@@ -26,11 +26,11 @@ func NewBlogHd(cq IBlogCRUDQuery) blogHd {
 	return blogHd{cq}
 }
 
-func (b *blogHd) create(e echo.Context) error {
+func (b *blogHd) Create(e echo.Context) error {
 	data := model.Blog{}
 	err := e.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructBlog, nil)
+		resp := NewResponse(Error, errorStructBlog, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
@@ -40,25 +40,25 @@ func (b *blogHd) create(e echo.Context) error {
 
 	err = b.crudQuery.Create(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructBlog, nil)
+		resp := NewResponse(Error, errorStructBlog, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	resp := newResponse(Message, blogCreated, nil)
+	resp := NewResponse(Message, blogCreated, nil)
 	return e.JSON(http.StatusCreated, resp)
 }
 
-func (b *blogHd) update(e echo.Context) error {
+func (b *blogHd) Update(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	data := model.Blog{}
 	err = e.Bind(&data)
 	if err != nil {
-		resp := newResponse(Error, errorStructBlog, nil)
+		resp := NewResponse(Error, errorStructBlog, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
@@ -68,108 +68,108 @@ func (b *blogHd) update(e echo.Context) error {
 
 	err = b.crudQuery.Update(uint(ID), &data)
 	if err != nil {
-		resp := newResponse(Error, errorStructBlog, nil)
+		resp := NewResponse(Error, errorStructBlog, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	resp := newResponse(Message, updatedBlog, nil)
+	resp := NewResponse(Message, updatedBlog, nil)
 	return e.JSON(http.StatusOK, resp)
 }
 
-func (b *blogHd) getById(e echo.Context) error {
+func (b *blogHd) GetById(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	data, err := b.crudQuery.GetByID(uint(ID))
 	if err != nil {
-		res := newResponse(Error, errorBlogDoesNotExists, nil)
+		res := NewResponse(Error, errorBlogDoesNotExists, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
-	res := newResponse(Message, ok, data)
+	res := NewResponse(Message, ok, data)
 	return e.JSON(http.StatusOK, res)
 }
 
-func (b *blogHd) getAll(e echo.Context) error {
+func (b *blogHd) GetAll(e echo.Context) error {
 	max, err := strconv.Atoi(e.Param("max"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	data, err := b.crudQuery.GetAll(max)
 	if err != nil {
-		res := newResponse(Error, errorGetAllBlog, nil)
+		res := NewResponse(Error, errorGetAllBlog, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
-	res := newResponse(Message, ok, data)
+	res := NewResponse(Message, ok, data)
 	return e.JSON(http.StatusOK, res)
 }
 
-func (b *blogHd) deleteSoft(e echo.Context) error {
+func (b *blogHd) DeleteSoft(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	err = b.crudQuery.DeleteSoft(uint(ID))
 	if err != nil {
-		res := newResponse(Error, errorBlogDoesNotExists, nil)
+		res := NewResponse(Error, errorBlogDoesNotExists, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
-	res := newResponse(Message, ok,nil)
+	res := NewResponse(Message, ok,nil)
 	return e.JSON(http.StatusOK, res)
 }
 
-func (b *blogHd) allBlogCategory(e echo.Context) error {
+func (b *blogHd) AllBlogCategory(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	max, err := strconv.Atoi(e.Param("max"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	data, err := b.crudQuery.AllBlogCategory(ID, max)
 	if err != nil {
-		res := newResponse(Error, errorBlogDoesNotExists, nil)
+		res := NewResponse(Error, errorBlogDoesNotExists, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
-	res := newResponse(Message, ok,data)
+	res := NewResponse(Message, ok,data)
 	return e.JSON(http.StatusOK, res)
 }
 
-func (b *blogHd) allBlogEmployee(e echo.Context) error {
+func (b *blogHd) AllBlogEmployee(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	max, err := strconv.Atoi(e.Param("max"))
 	if err != nil {
-		res := newResponse(Error, errorId, nil)
+		res := NewResponse(Error, errorId, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
 	data, err := b.crudQuery.AllBlogEmployee(uint(ID), max)
 	if err != nil {
-		res := newResponse(Error, errorBlogDoesNotExists, nil)
+		res := NewResponse(Error, errorBlogDoesNotExists, nil)
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
-	res := newResponse(Message, ok,data)
+	res := NewResponse(Message, ok,data)
 	return e.JSON(http.StatusOK, res)
 }
 
@@ -180,12 +180,12 @@ func areDataValidBlog(data *model.Blog, e echo.Context) error {
 	data.Content = strings.TrimSpace(data.Content)
 
 	if !isEmpty(data.Author) || !isEmpty(data.Tittle) || !isEmpty(data.Synthesis) {
-		resp := newResponse(Error, errorContent, nil)
+		resp := NewResponse(Error, errorContent, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
 	if len(data.Content) < minLenContent {
-		resp := newResponse(Error, errorContentBlog, nil)
+		resp := NewResponse(Error, errorContentBlog, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 	return nil
