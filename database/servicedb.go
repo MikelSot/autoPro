@@ -41,7 +41,7 @@ func (s ServiceDao) GetAll(max int) (*model.Services, error) {
 		max = MaxGetAll
 	}
 	services := model.Services{}
-	DB().Limit(max).First(&services)
+	DB().Limit(max).Find(&services)
 	return &services, nil
 }
 

@@ -30,7 +30,6 @@ type SignInClient struct {
 
 //actualizar informacion
 type EditClient struct {
-	ID       uint   `json:"id"`
 	Name     string `json:"name"`
 	LastName string `json:"last_name"`
 	Email    string `json:"email"`
@@ -45,18 +44,18 @@ type EditClient struct {
 
 // datos del cliente al iniciar sesion
 type DataClient struct {
-	ID            uint   `json:"id"`
-	Name          string `json:"name"`
-	LastName      string `json:"last_name"`
-	Email         string `json:"email"`
-	Password      string `json:"password"`
-	Dni           string `gorm:"type:char(8)" json:"dni"`
-	Ruc           string `json:"ruc"`
-	Phone         string `json:"phone"`
-	Picture       string `json:"picture"`
-	Address       string `json:"address"`
-	State         string `json:"state"`
-	Role          uint8  `json:"role"`
+	ID       uint   `json:"id"`
+	Name     string `json:"name"`
+	LastName string `json:"last_name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Dni      string `gorm:"type:char(8)" json:"dni"`
+	Ruc      string `json:"ruc"`
+	Phone    string `json:"phone"`
+	Picture  string `json:"picture"`
+	Address  string `json:"address"`
+	State    string `json:"state"`
+	Role     uint8  `json:"role"`
 }
 
 // Claim contiene los datos que iran en el payload del token

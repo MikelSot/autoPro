@@ -43,7 +43,7 @@ func (p *ProductDao) GetAll(max int) (*model.Products, error) {
 		max = MaxGetAll
 	}
 	products := model.Products{}
-	DB().Limit(max).First(&products)
+	DB().Limit(max).Find(&products)
 	return &products, nil
 }
 

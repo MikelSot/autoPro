@@ -33,7 +33,7 @@ func (p PaymentMethodDao) GetAll(max int) (*model.PaymentMethods, error) {
 		max = MaxGetAll
 	}
 	methods := model.PaymentMethods{}
-	DB().Limit(max).First(&methods)
+	DB().Limit(max).Find(&methods)
 	return &methods, nil
 }
 

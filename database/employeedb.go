@@ -31,7 +31,7 @@ func (e *EmployeeDao) GetByID(ID uint) (*dto.AllDataEmployee, error) {
 	c:= NewClientDao()
 	DB().First(&employee, ID)
 
-	_,data,_,_:= c.QueryEmailExists(employee.Email)
+	_,data,_:= c.QueryEmailExists(employee.Email)
 	allData := allDataEmployee(data,employee)
 	return &allData, nil
 }
@@ -41,7 +41,7 @@ func (e *EmployeeDao) GetAll(max int) (*model.Employees, error) {
 		max = MaxGetAll
 	}
 	employees := model.Employees{}
-	DB().Limit(max).First(&employees)
+	DB().Limit(max).Find(&employees)
 	return &employees, nil
 }
 
@@ -64,7 +64,7 @@ func (e *EmployeeDao) DataEmployeeHome(max int) (*dto.DataEmployeeHomes,error) {
 		max = MaxGetAll
 	}
 	employees :=dto.DataEmployeeHomes{}
-	DB().Table("clients").Limit(max).Select(
+	DB().Table("clients c").Limit(max).Select(
 		"c.id",
 		"c.name",
 		"c.last_name",
@@ -80,31 +80,23 @@ func (e *EmployeeDao) DataEmployeeHome(max int) (*dto.DataEmployeeHomes,error) {
 	return &employees, nil
 }
 
-func (e *EmployeeDao) QueryEmailExists(email string) (bool, model.Client, model.Employee, error) {
+func (e *EmployeeDao) QueryEmailExists(email string) (bool,  model.Employee, error) {
 	employee := model.Employee{}
 	values := DB().Select("Email").Find(&employee, "email = ?", email)
 	if values.RowsAffected != ZeroRowsAffected {
-		return true,model.Client{} ,model.Employee{} ,nil
+		return true ,employee ,nil
 	}
-	return false,model.Client{},model.Employee{},nil
+	return false, model.Employee{},nil
 }
 
-func (e *EmployeeDao) QueryDniExists(dni string) (bool, error) {
-	employee := model.Employee{}
-	values := DB().Select("Email").Find(&employee, "dni = ?", dni)
-	if values.RowsAffected != ZeroRowsAffected {
-		return true, nil
-	}
-	return false,nil
-}
-
-func (e *EmployeeDao) QueryUriExists(uri string) (bool, error) {
-	employee := model.Employee{}
-	values := DB().Select("Uri").Find(&employee, "uri = ?", uri)
-	if values.RowsAffected != ZeroRowsAffected {
-		return true, nil
-	}
-	return false,nil
+func (e *EmployeeDao) QueryEmailEqualsClient(email string) (uint,error) {
+	var ID uint
+	DB().Table("clients c").Limit(1).Select(
+		"c.email",
+	).Joins(
+		"INNER JOIN employees e on c.email = e.email",
+	).Where("c.email = ?", email).Scan(&ID)
+	return ID, nil
 }
 
 func allDataEmployee(data model.Client, employee model.Employee) dto.AllDataEmployee {

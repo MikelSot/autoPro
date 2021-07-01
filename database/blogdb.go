@@ -33,7 +33,7 @@ func (b BlogDao) GetAll(max int) (*model.Blogs, error) {
 		max = MaxGetAll
 	}
 	blogs := model.Blogs{}
-	DB().Limit(max).First(&blogs)
+	DB().Limit(max).Find(&blogs)
 	return &blogs, nil
 }
 

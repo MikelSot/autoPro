@@ -35,7 +35,7 @@ func (r *RoleDao) GetAll(max int) (*model.Roles, error) {
 		max = MaxGetAll
 	}
 	roles := model.Roles{}
-	DB().Limit(max).First(&roles)
+	DB().Limit(max).Find(&roles)
 	return &roles, nil
 }
 

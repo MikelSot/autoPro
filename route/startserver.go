@@ -26,6 +26,8 @@ func StartServer()  {
 	comment := database.NewCommentDao()
 	technicalReview := database.NewTechnicalReviewDao()
 	appointment := database.NewAppointmentDao()
+	method := database.NewPaymentMethodDao()
+
 	e := echo.New()
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
@@ -35,9 +37,10 @@ func StartServer()  {
 	Client(e, &client)
 	Blog(e,&blog, &comment)
 	Invoice(e, &invoice,&invoiceItem)
-	Product(e, &product)
+	Product(e, &product, &comment)
 	AppointmentReview(e, &technicalReview, &appointment)
-
+	PaymentMethod(e, &method)
+	Employee(e, &employee)
 
 	err = e.Start(":8080")
 	if err != nil {

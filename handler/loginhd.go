@@ -36,9 +36,9 @@ func (l *login) Login(e echo.Context) error {
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
-	exists, client, _, _ := l.crudExists.QueryEmailExists(data.Email)
+	exists, client,_ := l.crudExists.QueryEmailExists(data.Email)
 	if !exists {
-		resp := NewResponse(Error, errorEmailIncorrect, nil)
+		resp := NewResponse(Error, errorEmailIncorrect, client)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 

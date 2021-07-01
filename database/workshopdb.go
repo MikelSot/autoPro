@@ -34,7 +34,7 @@ func (w *WorkshopDao) GetAll(max int) (*model.Workshops, error) {
 		max = MaxGetAll
 	}
 	workshops := model.Workshops{}
-	DB().Limit(max).First(&workshops)
+	DB().Limit(max).Find(&workshops)
 	return &workshops, nil
 }
 

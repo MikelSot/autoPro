@@ -34,7 +34,7 @@ func (p *productHd) Create(e echo.Context) error {
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	if err, bool := areDataValidProduct(&data, *p, e); !bool {
+	if err, bool := areDataValidProduct(&data, e); !bool {
 		return err
 	}
 
@@ -62,7 +62,7 @@ func (p *productHd) Update(e echo.Context) error {
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	if err, bool := areDataValidProduct(&data, *p, e); !bool {
+	if err, bool := areDataValidProduct(&data, e); !bool {
 		return err
 	}
 
@@ -107,6 +107,23 @@ func (p *productHd) GetAll(e echo.Context) error {
 	}
 
 	res := NewResponse(Message, ok, data)
+	return e.JSON(http.StatusOK, res)
+}
+
+func (p *productHd) DeleteSoft(e echo.Context) error {
+	ID, err := strconv.Atoi(e.Param("id"))
+	if err != nil {
+		response := NewResponse(Error, errorId, nil)
+		return e.JSON(http.StatusBadRequest, response)
+	}
+
+	err = p.crudQuery.DeleteSoft(uint(ID))
+	if err != nil {
+		response := NewResponse(Error, errorProductIDDoesNotExists, nil)
+		return e.JSON(http.StatusBadRequest, response)
+	}
+
+	res := NewResponse(Message, ok, nil)
 	return e.JSON(http.StatusOK, res)
 }
 
@@ -156,7 +173,7 @@ func (p *productHd) AllProductsWorkshop(e echo.Context) error {
 	return e.JSON(http.StatusOK, res)
 }
 
-func areDataValidProduct(data *model.Product, p productHd, e echo.Context) (error, bool) {
+func areDataValidProduct(data *model.Product, e echo.Context) (error, bool) {
 	data.Name = strings.TrimSpace(data.Name)
 	data.SKU = strings.TrimSpace(data.SKU)
 	data.ProductCode = strings.TrimSpace(data.ProductCode)
@@ -167,6 +184,5 @@ func areDataValidProduct(data *model.Product, p productHd, e echo.Context) (erro
 		resp := NewResponse(Error, errorContent, nil)
 		return e.JSON(http.StatusBadRequest, resp), false
 	}
-
 	return nil, true
 }

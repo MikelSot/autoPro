@@ -34,7 +34,7 @@ func (t *TechnicalReviewDao) GetAll(max int) (*model.TechnicalReviews, error) {
 		max = MaxGetAll
 	}
 	reviews := model.TechnicalReviews{}
-	DB().Limit(max).First(&reviews)
+	DB().Limit(max).Find(&reviews)
 	return &reviews, nil
 }
 

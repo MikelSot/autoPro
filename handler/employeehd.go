@@ -1,9 +1,12 @@
 package handler
 
 import (
+	"github.com/MikelSot/autoPro/database"
 	"github.com/MikelSot/autoPro/model"
+	"github.com/MikelSot/autoPro/model/dto"
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -25,19 +28,32 @@ func NewEmployeeHd(ce IEmployeeCRUDExists) employeeHd {
 }
 
 func (e *employeeHd) Create(c echo.Context) error {
-	data := model.Employee{}
+	cl := database.NewClientDao()
+	data := dto.DataEmployee{}
 	err := c.Bind(&data)
 	if err != nil {
 		resp := NewResponse(Error, errorStructEmployee, nil)
 		return c.JSON(http.StatusInternalServerError, resp)
 	}
 
+	areDataValidEmployee(&data)
 	if err, bool := isEmailValidEmployee(&data, *e, c); !bool {
 		return err
 	}
 
-	areDataValidEmployee(&data)
-	err = e.crudExists.Create(&data)
+	regexSpace := regexp.MustCompile(` `)
+	dniWithoutSpace := regexSpace.ReplaceAllString(data.Dni, "")
+	existsDni,_, _ := cl.QueryDniExists(dniWithoutSpace)
+	if existsDni {
+		resp := NewResponse(Error, errorDniExists, nil)
+		return c.JSON(http.StatusBadRequest, resp)
+	}
+
+	edit := dto.EditClient{}
+	editDataEmployeeClient(&edit, data)
+
+	employee := updateDataEmployee(&data)
+	err = e.crudExists.Create(&employee)
 	if err != nil {
 		resp := NewResponse(Error, errorStructEmployee, nil)
 		return c.JSON(http.StatusInternalServerError, resp)
@@ -54,19 +70,20 @@ func (e *employeeHd) Update(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, res)
 	}
 
-	data := model.Employee{}
+	data := dto.DataEmployee{}
 	err = c.Bind(&data)
 	if err != nil {
 		resp := NewResponse(Error, errorStructEmployee, nil)
 		return c.JSON(http.StatusInternalServerError, resp)
 	}
 
-	if err, bool := isEmailValidEmployee(&data, *e, c); !bool {
+	areDataValidEmployee(&data)
+	if err, bool := isEmailValidEmployeeUpdate(uint(ID),&data, *e, c); !bool {
 		return err
 	}
 
-	areDataValidEmployee(&data)
-	err = e.crudExists.Update(uint(ID), &data)
+	employee := updateDataEmployee(&data)
+	err = e.crudExists.Update(uint(ID), &employee)
 	if err != nil {
 		resp := NewResponse(Error, errorStructEmployee, nil)
 		return c.JSON(http.StatusInternalServerError, resp)
@@ -148,25 +165,90 @@ func (e *employeeHd) DeleteSoft(c echo.Context) error {
 	return c.JSON(http.StatusOK, res)
 }
 
-func isEmailValidEmployee(data *model.Employee, c employeeHd, e echo.Context) (error, bool) {
-	data.Email = strings.TrimSpace(data.Email)
 
+
+func isEmailValidEmployee(data *dto.DataEmployee, e employeeHd, c echo.Context) (error, bool) {
+	cl := database.NewClientDao()
 	if !isEmail(data.Email) {
 		resp := NewResponse(Error, errorEmailIncorrect, nil)
-		return e.JSON(http.StatusBadRequest, resp), false
+		return c.JSON(http.StatusBadRequest, resp), false
 	}
 
-	exists, _, _, _ := c.crudExists.QueryEmailExists(strings.TrimSpace(data.Email))
+	exists,_, _ := e.crudExists.QueryEmailExists(data.Email)
 	if exists {
 		resp := NewResponse(Error, errorEmailExists, nil)
-		return e.JSON(http.StatusBadRequest, resp), false
+		return c.JSON(http.StatusBadRequest, resp), false
+	}
+
+	existsEmail,_,_:= cl.QueryEmailExists(data.Email)
+	if existsEmail {
+		resp := NewResponse(Error, errorEmailExists + "en el client", nil)
+		return c.JSON(http.StatusBadRequest, resp), false
 	}
 	return nil, true
 }
 
-func areDataValidEmployee(data *model.Employee) {
+func isEmailValidEmployeeUpdate(ID uint,data *dto.DataEmployee, e employeeHd, c echo.Context) (error,bool) {
+	cl := database.NewClientDao()
+	if !isEmail(data.Email) {
+		resp := NewResponse(Error, errorEmailIncorrect, nil)
+		return c.JSON(http.StatusBadRequest, resp), false
+	}
+
+	_,employee, _ := e.crudExists.QueryEmailExists(data.Email)
+	if employee.Email == data.Email && employee.ID != ID {
+		resp := NewResponse(Error, errorEmailExists, nil)
+		return c.JSON(http.StatusBadRequest, resp), false
+	}
+
+	id,_:= e.crudExists.QueryEmailEqualsClient(employee.Email)
+	edit := dto.EditClient{}
+	editDataEmployeeClient(&edit, *data)
+	cl.Update(id, &edit)
+	return nil, true
+}
+
+func editDataEmployeeClient(edit *dto.EditClient, data dto.DataEmployee)  {
+	edit.Name =  data.Name
+	edit.LastName = data.LastName
+	edit.Email = data.Email
+	edit.Password = data.Password
+	edit.Dni = data.Dni
+	edit.Phone = data.Phone
+	edit.Picture = data.Picture
+	edit.Address = data.Address
+	edit.Uri = data.Uri
+}
+
+func areDataValidEmployee(data *dto.DataEmployee) {
+	data.Name = strings.TrimSpace(data.Name)
+	data.LastName = strings.TrimSpace(data.LastName)
 	data.Email = strings.TrimSpace(data.Email)
+	regexSpace := regexp.MustCompile(` `)
+	nameWithoutSpace := regexSpace.ReplaceAllString(data.Name, "")
+	data.Password = nameWithoutSpace
+	data.Dni = strings.TrimSpace(data.Dni)
+	data.Ruc = strings.TrimSpace(data.Ruc)
+	data.Phone = strings.TrimSpace(data.Phone)
+	data.Picture = strings.TrimSpace(data.Picture)
+	data.Address = strings.TrimSpace(data.Address)
+	data.State = strings.TrimSpace(data.State)
 	data.Turn = strings.TrimSpace(data.Turn)
 	data.Workdays = strings.TrimSpace(data.Workdays)
 	data.Profession = strings.TrimSpace(data.Profession)
+}
+
+func updateDataEmployee(data *dto.DataEmployee) model.Employee {
+	employee := model.Employee{
+		Email: data.Email,
+		BirthDate: data.BirthDate,
+		Active: data.Active,
+		Salary: data.Salary,
+		Turn: data.Turn,
+		Workdays: data.Workdays,
+		Profession: data.Profession,
+		BossID: &data.BossID,
+		RoleID: data.RoleID,
+	}
+	return employee
 }

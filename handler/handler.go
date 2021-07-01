@@ -15,7 +15,6 @@ type IClientCRUDExists interface {
 // IClientCRUDExists embebida de empleado
 type IEmployeeCRUDExists interface {
 	IEmployeeCRUD
-	IQueryExists
 }
 
 // IClientCRUDExists embebida de cita
@@ -70,8 +69,8 @@ type IClientCRUD interface {
 
 // IQueryExists esta interface tiene metodos para validar si ya existe determinado atributo.
 type IQueryExists interface {
-	QueryEmailExists(email string) (bool,model.Client, model.Employee, error)
-	QueryDniExists(dni string) (bool, error)
+	QueryEmailExists(email string) (bool,model.Client, error)
+	QueryDniExists(dni string) (bool,uint, error)
 	QueryUriExists(uri string) (bool, error)
 }
 
@@ -84,6 +83,8 @@ type IEmployeeCRUD interface {
 	DeleteSoft(ID uint) error
 	DeletePermanent(ID uint) error
 	DataEmployeeHome(max int) (*dto.DataEmployeeHomes,error)
+	QueryEmailEqualsClient(email string) (uint,error)
+	QueryEmailExists(email string) (bool, model.Employee, error)
 }
 
 // IAppointmentCRUD interface crud de citas

@@ -94,23 +94,23 @@ func (c *ClientDao) DeletePermanent(ID uint) error {
 	return nil
 }
 
-func (c *ClientDao) QueryEmailExists(email string) (bool,model.Client, model.Employee, error) {
+func (c *ClientDao) QueryEmailExists(email string) (bool,model.Client, error) {
 	client := model.Client{}
 	values := DB().Limit(1).Find(&client, "email = ?", email)
 	//values := DB().Limit(1).Select("Email").Find(&client, "email = ?", email)
 	if values.RowsAffected != ZeroRowsAffected {
-		return true, client,model.Employee{},nil
+		return true, client,nil
 	}
-	return false,model.Client{}, model.Employee{},nil
+	return false,model.Client{}, nil
 }
 
-func (c *ClientDao) QueryDniExists(dni string) (bool, error) {
+func (c *ClientDao) QueryDniExists(dni string) (bool,uint,error) {
 	client := model.Client{}
-	values := DB().Limit(1).Select("Dni").Find(&client, "dni = ?", dni)
+	values := DB().Limit(1).Select("Dni", "ID").Find(&client, "dni = ?", dni)
 	if values.RowsAffected != ZeroRowsAffected {
-		return true, nil
+		return true, client.ID, nil
 	}
-	return false, nil
+	return false, uint(0),nil
 }
 
 func (c *ClientDao) QueryUriExists(uri string) (bool, error) {

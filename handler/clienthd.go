@@ -49,6 +49,12 @@ func (c *clientHd) SingIn(e echo.Context) error {
 		return err
 	}
 
+	exists, _, _ := c.crudExists.QueryEmailExists(strings.TrimSpace(data.Email))
+	if exists {
+		resp := NewResponse(Error, errorEmailExists, nil)
+		return e.JSON(http.StatusBadRequest, resp)
+	}
+
 	if error := c.crudExists.Create(&data);error != nil {
 		resp := NewResponse(Error, errorStruct, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
@@ -77,7 +83,7 @@ func (c *clientHd) EditClient(e echo.Context) error {
 		return error
 	}
 
-	if error, bool := isValidDniOrUriClient(&data, *c, e); !bool {
+	if error, bool := isValidDniOrUriClient( uint(ID) ,&data, *c, e); !bool {
 		return error
 	}
 
@@ -155,16 +161,10 @@ func areDataValidClient(data *dto.SignInClient, c clientHd, e echo.Context) (err
 		resp := NewResponse(Error, errorContent, nil)
 		return e.JSON(http.StatusBadRequest, resp), false
 	}
-
-	exists, _, _, _ := c.crudExists.QueryEmailExists(strings.TrimSpace(data.Email))
-	if exists {
-		resp := NewResponse(Error, errorEmailExists, nil)
-		return e.JSON(http.StatusBadRequest, resp), false
-	}
 	return nil, true
 }
 
-func isValidDniOrUriClient(data *dto.EditClient, c clientHd, e echo.Context) (error,bool) {
+func isValidDniOrUriClient(ID uint, data *dto.EditClient, c clientHd, e echo.Context) (error,bool) {
 	data.Email = strings.TrimSpace(data.Email)
 	data.Name = strings.TrimSpace(data.Name)
 	data.LastName = strings.TrimSpace(data.LastName)
@@ -182,8 +182,15 @@ func isValidDniOrUriClient(data *dto.EditClient, c clientHd, e echo.Context) (er
 		return e.JSON(http.StatusBadRequest, resp), false
 	}
 
-	existsDni, _ := c.crudExists.QueryDniExists(dniWithoutSpace)
-	if existsDni {
+	// si el email nuevo es igual a otro email de otro usuario
+	_, dataClient, _ := c.crudExists.QueryEmailExists(data.Email)
+	if dataClient.Email == data.Email && dataClient.ID != ID {
+		resp := NewResponse(Error, errorEmailExists, nil)
+		return e.JSON(http.StatusBadRequest, resp), false
+	}
+
+	existsDni,id, _ := c.crudExists.QueryDniExists(dniWithoutSpace)
+	if existsDni && ID != id{
 		resp := NewResponse(Error, errorDniExists, nil)
 		return e.JSON(http.StatusBadRequest, resp), false
 	}
