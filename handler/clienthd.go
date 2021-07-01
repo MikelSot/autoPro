@@ -39,18 +39,17 @@ func NewClientHd(ce IClientCRUDExists) clientHd {
 
 func (c *clientHd) SingIn(e echo.Context) error {
 	data := dto.SignInClient{}
-	err := e.Bind(&data) // de json a estructura
-	if err != nil {
+	 // de json a estructura
+	if err := e.Bind(&data);err != nil {
 		resp := NewResponse(Error, errorStruct, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	err = areDataValidClient(&data, *c, e)
-	if err != nil {
+	if err,bool := areDataValidClient(&data, *c, e); !bool {
 		return err
 	}
-	err = c.crudExists.Create(&data)
-	if err != nil {
+
+	if error := c.crudExists.Create(&data);error != nil {
 		resp := NewResponse(Error, errorStruct, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
@@ -68,45 +67,40 @@ func (c *clientHd) EditClient(e echo.Context) error {
 	}
 
 	data := dto.EditClient{}
-	err = e.Bind(&data)
-	if err != nil {
+	if error := e.Bind(&data); error != nil {
 		resp := NewResponse(Error, errorStruct, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
 	dataSign := dto.SignInClient{Name: data.Name, LastName: data.LastName, Email: data.Email}
-	err = areDataValidClient(&dataSign, *c, e)
-	if err != nil {
-		return err
+	if error,bool := areDataValidClient(&dataSign, *c, e); !bool {
+		return error
 	}
 
-	err = isValidDniOrUriClient(&data, *c, e)
-	if err != nil {
-		return err
+	if error, bool := isValidDniOrUriClient(&data, *c, e); !bool {
+		return error
 	}
 
-	err = c.crudExists.Update(uint(ID), &data)
-	if err != nil {
+	if error := c.crudExists.Update(uint(ID), &data); error != nil {
 		resp := NewResponse(Error, errorStruct, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
 	resp := NewResponse(Message, updatedClient, nil)
 	return e.JSON(http.StatusOK, resp)
-	return nil
 }
 
 func (c *clientHd) GetById(e echo.Context) error {
 	ID, err := strconv.Atoi(e.Param("id"))
 	if err != nil {
-		response := NewResponse(Error, errorId, nil)
-		return e.JSON(http.StatusBadRequest, response)
+		resp := NewResponse(Error, errorId, nil)
+		return e.JSON(http.StatusBadRequest, resp)
 	}
 
 	data, err := c.crudExists.GetByID(uint(ID))
 	if err != nil {
-		response := NewResponse(Error, errorClientIDDoesNotExist, nil)
-		return e.JSON(http.StatusBadRequest, response)
+		resp := NewResponse(Error, errorClientIDDoesNotExist, nil)
+		return e.JSON(http.StatusBadRequest, resp)
 	}
 
 	res := NewResponse(Message, ok, data)
@@ -147,30 +141,30 @@ func (c *clientHd) DeleteSoft(e echo.Context) error {
 	return e.JSON(http.StatusOK, res)
 }
 
-func areDataValidClient(data *dto.SignInClient, c clientHd, e echo.Context) error {
+func areDataValidClient(data *dto.SignInClient, c clientHd, e echo.Context) (error,bool) {
 	data.Email = strings.TrimSpace(data.Email)
 	data.Name = strings.TrimSpace(data.Name)
 	data.LastName = strings.TrimSpace(data.LastName)
 
 	if !isEmail(data.Email) {
 		resp := NewResponse(Error, errorEmailIncorrect, nil)
-		return e.JSON(http.StatusBadRequest, resp)
+		return e.JSON(http.StatusBadRequest, resp), false
 	}
 
 	if !isEmpty(data.Name) || !isEmpty(data.LastName) || !isEmptyEmail(data.Email) {
 		resp := NewResponse(Error, errorContent, nil)
-		return e.JSON(http.StatusBadRequest, resp)
+		return e.JSON(http.StatusBadRequest, resp), false
 	}
 
 	exists, _, _, _ := c.crudExists.QueryEmailExists(strings.TrimSpace(data.Email))
 	if exists {
 		resp := NewResponse(Error, errorEmailExists, nil)
-		return e.JSON(http.StatusBadRequest, resp)
+		return e.JSON(http.StatusBadRequest, resp), false
 	}
-	return nil
+	return nil, true
 }
 
-func isValidDniOrUriClient(data *dto.EditClient, c clientHd, e echo.Context) error {
+func isValidDniOrUriClient(data *dto.EditClient, c clientHd, e echo.Context) (error,bool) {
 	data.Email = strings.TrimSpace(data.Email)
 	data.Name = strings.TrimSpace(data.Name)
 	data.LastName = strings.TrimSpace(data.LastName)
@@ -185,13 +179,13 @@ func isValidDniOrUriClient(data *dto.EditClient, c clientHd, e echo.Context) err
 	r, _ := regexp.Compile(regexDni)
 	if !r.MatchString(dniWithoutSpace) {
 		resp := NewResponse(Error, errorLenDni, nil)
-		return e.JSON(http.StatusBadRequest, resp)
+		return e.JSON(http.StatusBadRequest, resp), false
 	}
 
 	existsDni, _ := c.crudExists.QueryDniExists(dniWithoutSpace)
 	if existsDni {
 		resp := NewResponse(Error, errorDniExists, nil)
-		return e.JSON(http.StatusBadRequest, resp)
+		return e.JSON(http.StatusBadRequest, resp), false
 	}
 
 	url := at + strings.ToLower(nameWithoutSpace) + strings.ToLower(lastNameWithoutSpace)
@@ -200,7 +194,7 @@ func isValidDniOrUriClient(data *dto.EditClient, c clientHd, e echo.Context) err
 		url = at + url
 	}
 	data.Uri = url
-	return nil
+	return nil, true
 }
 
 func isEmail(email string) bool {

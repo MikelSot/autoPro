@@ -44,8 +44,7 @@ func (a *appointmentHd) Create(e echo.Context) error {
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	err = areDataValidAppointment(&data, *a, e)
-	if err != nil {
+	if err, bool := areDataValidAppointment(&data, *a, e); !bool {
 		return err
 	}
 
@@ -73,8 +72,7 @@ func (a *appointmentHd) Update(e echo.Context) error {
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	err = areDataValidAppointment(&data, *a, e)
-	if err != nil {
+	if err, bool := areDataValidAppointment(&data, *a, e); !bool {
 		return err
 	}
 
@@ -144,7 +142,6 @@ func (a *appointmentHd) AllAppointmentClient(e echo.Context) error {
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
-
 	appointments, err := a.crudQuery.AllAppointmentClient(uint(ID), max)
 	if err != nil {
 		response := NewResponse(Error, errorAppointmentIDDoesNotExist, nil)
@@ -155,7 +152,7 @@ func (a *appointmentHd) AllAppointmentClient(e echo.Context) error {
 	return e.JSON(http.StatusOK, res)
 }
 
-func areDataValidAppointment(data *model.Appointment, a appointmentHd, e echo.Context) error {
+func areDataValidAppointment(data *model.Appointment, a appointmentHd, e echo.Context) (error, bool) {
 	data.Workshop = strings.TrimSpace(data.Workshop)
 	data.Service = strings.TrimSpace(data.Service)
 	data.Description = strings.TrimSpace(data.Description)
@@ -164,29 +161,29 @@ func areDataValidAppointment(data *model.Appointment, a appointmentHd, e echo.Co
 
 	if !isEmpty(data.Workshop) || !isEmpty(data.Service) || !isNumber(data.OrderAttention) || !isStringVehicle(data.VehicleType) {
 		resp := NewResponse(Error, errorContent, nil)
-		return e.JSON(http.StatusBadRequest, resp)
+		return e.JSON(http.StatusBadRequest, resp), false
 	}
 
 	if exists, _ := a.crudQuery.QueryServiceExists(data.Service); !exists {
 		resp := NewResponse(Error, errorServiceDoesNotExists, nil)
-		return e.JSON(http.StatusBadRequest, resp)
+		return e.JSON(http.StatusBadRequest, resp), false
 	}
 
 	if exists, _ := a.crudQuery.QueryWorkshopExists(data.Workshop); !exists {
 		resp := NewResponse(Error, errorWorkshopDoesNotExists, nil)
-		return e.JSON(http.StatusBadRequest, resp)
+		return e.JSON(http.StatusBadRequest, resp), false
 	}
 
 	if data.DateHour.Hour() > maxHour || data.DateHour.Hour() < minHour {
 		resp := NewResponse(Error, errorHour, nil)
-		return e.JSON(http.StatusBadRequest, resp)
+		return e.JSON(http.StatusBadRequest, resp), false
 	}
 
 	if !isDateValid(data.DateHour) {
 		resp := NewResponse(Error, errorDate, nil)
-		return e.JSON(http.StatusBadRequest, resp)
+		return e.JSON(http.StatusBadRequest, resp), false
 	}
-	return nil
+	return nil, true
 }
 
 func isNumber(num string) bool {

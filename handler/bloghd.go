@@ -34,7 +34,7 @@ func (b *blogHd) Create(e echo.Context) error {
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	if err = areDataValidBlog(&data, e); err != nil {
+	if err, bool := areDataValidBlog(&data, e); !bool {
 		return err
 	}
 
@@ -62,7 +62,7 @@ func (b *blogHd) Update(e echo.Context) error {
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	if err = areDataValidBlog(&data, e); err != nil {
+	if err, bool := areDataValidBlog(&data, e); !bool {
 		return err
 	}
 
@@ -173,7 +173,7 @@ func (b *blogHd) AllBlogEmployee(e echo.Context) error {
 	return e.JSON(http.StatusOK, res)
 }
 
-func areDataValidBlog(data *model.Blog, e echo.Context) error {
+func areDataValidBlog(data *model.Blog, e echo.Context) (error, bool) {
 	data.Author = strings.TrimSpace(data.Author)
 	data.Tittle = strings.TrimSpace(data.Tittle)
 	data.Synthesis = strings.TrimSpace(data.Synthesis)
@@ -181,12 +181,12 @@ func areDataValidBlog(data *model.Blog, e echo.Context) error {
 
 	if !isEmpty(data.Author) || !isEmpty(data.Tittle) || !isEmpty(data.Synthesis) {
 		resp := NewResponse(Error, errorContent, nil)
-		return e.JSON(http.StatusBadRequest, resp)
+		return e.JSON(http.StatusBadRequest, resp), false
 	}
 
 	if len(data.Content) < minLenContent {
 		resp := NewResponse(Error, errorContentBlog, nil)
-		return e.JSON(http.StatusBadRequest, resp)
+		return e.JSON(http.StatusBadRequest, resp), false
 	}
-	return nil
+	return nil, true
 }

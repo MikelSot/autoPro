@@ -37,7 +37,6 @@ func (i *invoiceItemHd) Create(e echo.Context) error {
 	}
 
 	// corregir stock de productos cuando se elija uno
-
 	resp := NewResponse(Message, invoiceItemCreated, nil)
 	return e.JSON(http.StatusCreated, resp)
 }
@@ -63,7 +62,6 @@ func (i *invoiceItemHd) Update(e echo.Context) error {
 	}
 
 	// corregir stock de productos cuando sea actualizado y si es menor o mayor corregir
-
 	resp := NewResponse(Message, updatedInvoiceItem, nil)
 	return e.JSON(http.StatusOK, resp)
 }

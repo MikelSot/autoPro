@@ -1,12 +1,11 @@
 package middleware
 
 import (
-	"net/http"
-	"github.com/labstack/echo"
 	"github.com/MikelSot/autoPro/jwt"
+	"github.com/labstack/echo/v4"
+	"net/http"
 )
 
-//  echo.HandlerFunc -->  w http.ResponseWriter, r *http.Request
 
 // Authentication para validar que el token valido
 func Authentication(fun echo.HandlerFunc) echo.HandlerFunc {

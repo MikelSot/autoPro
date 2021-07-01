@@ -26,7 +26,6 @@ func StartServer()  {
 	comment := database.NewCommentDao()
 	technicalReview := database.NewTechnicalReviewDao()
 	appointment := database.NewAppointmentDao()
-
 	e := echo.New()
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())

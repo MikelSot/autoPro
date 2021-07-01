@@ -32,8 +32,7 @@ func (e *employeeHd) Create(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, resp)
 	}
 
-	err = isEmailValidEmployee(&data, *e, c)
-	if err != nil {
+	if err, bool := isEmailValidEmployee(&data, *e, c); !bool {
 		return err
 	}
 
@@ -62,8 +61,7 @@ func (e *employeeHd) Update(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, resp)
 	}
 
-	err = isEmailValidEmployee(&data, *e, c)
-	if err != nil {
+	if err, bool := isEmailValidEmployee(&data, *e, c); !bool {
 		return err
 	}
 
@@ -150,20 +148,20 @@ func (e *employeeHd) DeleteSoft(c echo.Context) error {
 	return c.JSON(http.StatusOK, res)
 }
 
-func isEmailValidEmployee(data *model.Employee, c employeeHd, e echo.Context) error {
+func isEmailValidEmployee(data *model.Employee, c employeeHd, e echo.Context) (error, bool) {
 	data.Email = strings.TrimSpace(data.Email)
 
 	if !isEmail(data.Email) {
 		resp := NewResponse(Error, errorEmailIncorrect, nil)
-		return e.JSON(http.StatusBadRequest, resp)
+		return e.JSON(http.StatusBadRequest, resp), false
 	}
 
 	exists, _, _, _ := c.crudExists.QueryEmailExists(strings.TrimSpace(data.Email))
 	if exists {
 		resp := NewResponse(Error, errorEmailExists, nil)
-		return e.JSON(http.StatusBadRequest, resp)
+		return e.JSON(http.StatusBadRequest, resp), false
 	}
-	return nil
+	return nil, true
 }
 
 func areDataValidEmployee(data *model.Employee) {

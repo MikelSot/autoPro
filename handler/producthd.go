@@ -34,7 +34,7 @@ func (p *productHd) Create(e echo.Context) error {
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	if err = areDataValidProduct(&data, *p, e); err != nil {
+	if err, bool := areDataValidProduct(&data, *p, e); !bool {
 		return err
 	}
 
@@ -62,7 +62,7 @@ func (p *productHd) Update(e echo.Context) error {
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	if err = areDataValidProduct(&data, *p, e); err != nil {
+	if err, bool := areDataValidProduct(&data, *p, e); !bool {
 		return err
 	}
 
@@ -156,7 +156,7 @@ func (p *productHd) AllProductsWorkshop(e echo.Context) error {
 	return e.JSON(http.StatusOK, res)
 }
 
-func areDataValidProduct(data *model.Product, p productHd, e echo.Context) error {
+func areDataValidProduct(data *model.Product, p productHd, e echo.Context) (error, bool) {
 	data.Name = strings.TrimSpace(data.Name)
 	data.SKU = strings.TrimSpace(data.SKU)
 	data.ProductCode = strings.TrimSpace(data.ProductCode)
@@ -165,8 +165,8 @@ func areDataValidProduct(data *model.Product, p productHd, e echo.Context) error
 
 	if !isEmpty(data.Name) {
 		resp := NewResponse(Error, errorContent, nil)
-		return e.JSON(http.StatusBadRequest, resp)
+		return e.JSON(http.StatusBadRequest, resp), false
 	}
 
-	return nil
+	return nil, true
 }
