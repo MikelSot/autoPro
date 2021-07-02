@@ -153,6 +153,8 @@ type IQueryInvoice interface {
 type IInvoiceItemCRUD interface {
 	Create(item *model.InvoiceItem) error
 	Update(ID uint, item *model.InvoiceItem) error
+	GetByID(ID uint) (*model.InvoiceItem,error)
+	UpdateStock(ID ,stock uint) error
 	DeleteSoft(ID uint) error
 	DeletePermanent(ID uint) error
 }

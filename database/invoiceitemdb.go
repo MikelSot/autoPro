@@ -30,6 +30,12 @@ func (i InvoiceItemDao) DeleteSoft(ID uint) error {
 	return nil
 }
 
+func (i InvoiceItemDao) GetByID(ID uint) (*model.InvoiceItem,error) {
+	item := model.InvoiceItem{}
+	DB().First(&item, ID)
+	return &item, nil
+}
+
 func (i InvoiceItemDao) DeletePermanent(ID uint) error {
 	item := model.InvoiceItem{}
 	item.ID = ID
@@ -46,4 +52,9 @@ func (i InvoiceItemDao) AllInvoiceItemInvoice(ID, max int) (*model.InvoiceItems,
 
 	// hacer dos inner joing con producto y servicio
 	return &items, nil
+}
+
+func (i *InvoiceItemDao) UpdateStock(ID ,stock uint) error {
+	DB().Table("products").Where("id = ?", ID).Update("stock", stock)
+	return nil
 }

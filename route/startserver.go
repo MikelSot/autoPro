@@ -27,6 +27,7 @@ func StartServer()  {
 	technicalReview := database.NewTechnicalReviewDao()
 	appointment := database.NewAppointmentDao()
 	method := database.NewPaymentMethodDao()
+	role := database.NewRoleDao()
 
 	e := echo.New()
 	e.Use(middleware.Recover())
@@ -41,6 +42,8 @@ func StartServer()  {
 	AppointmentReview(e, &technicalReview, &appointment)
 	PaymentMethod(e, &method)
 	Employee(e, &employee)
+	Role(e, &role)
+	Service(e, &service)
 
 	err = e.Start(":8080")
 	if err != nil {
