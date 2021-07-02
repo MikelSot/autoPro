@@ -3,7 +3,9 @@ package handler
 import (
 	"github.com/MikelSot/autoPro/model"
 	"github.com/labstack/echo/v4"
+	"io"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -38,6 +40,7 @@ func (b *blogHd) Create(e echo.Context) error {
 		return err
 	}
 
+	UploadBlog(&data, e)
 	err = b.crudQuery.Create(&data)
 	if err != nil {
 		resp := NewResponse(Error, errorStructBlog, nil)
@@ -65,7 +68,7 @@ func (b *blogHd) Update(e echo.Context) error {
 	if err, bool := areDataValidBlog(&data, e); !bool {
 		return err
 	}
-
+	UploadBlog(&data, e)
 	err = b.crudQuery.Update(uint(ID), &data)
 	if err != nil {
 		resp := NewResponse(Error, errorStructBlog, nil)
@@ -171,6 +174,32 @@ func (b *blogHd) AllBlogEmployee(e echo.Context) error {
 
 	res := NewResponse(Message, ok,data)
 	return e.JSON(http.StatusOK, res)
+}
+
+func UploadBlog(data *model.Blog, e echo.Context) error  {
+	file, err := e.FormFile("file-blog")
+	if err != nil {
+		return err
+	}
+	src, err := file.Open()
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+	archive := "uploads/blogs/" +"@"+file.Filename
+	// ruta destino
+	dst, err := os.Create(archive)
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+	// Copia ruta archivo a ruta destino
+	if _, err = io.Copy(dst, src); err != nil {
+		return err
+	}
+
+	data.Pictures = archive
+	return nil
 }
 
 func areDataValidBlog(data *model.Blog, e echo.Context) (error, bool) {

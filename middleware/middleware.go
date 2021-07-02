@@ -19,7 +19,7 @@ func Authentication(fun echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-// redireccionar si esta autenticado (al home)
+// redireccionar si esta autenticado (al home), no middl
 
 
-// un midlleware para preguntar si es admin
+// no middle para preguntar si es admin

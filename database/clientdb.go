@@ -94,6 +94,11 @@ func (c *ClientDao) DeletePermanent(ID uint) error {
 	return nil
 }
 
+func (c *ClientDao) UpdatePicture(ID uint, rute string) error {
+	DB().Table("clients").Where("id = ?", ID).Update("picture", rute)
+	return nil
+}
+
 func (c *ClientDao) QueryEmailExists(email string) (bool,model.Client, error) {
 	client := model.Client{}
 	values := DB().Limit(1).Find(&client, "email = ?", email)

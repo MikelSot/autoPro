@@ -36,9 +36,10 @@ func Client(e *echo.Echo, storage handler.IClientCRUDExists) {
 	client.Use(middleware.Authentication)
 
 	client.PUT("/edit-profile/:id", c.EditClient)
-	e.GET("/:id", c.GetById)
-	e.GET("/all-client/:max", c.GetAll)
-	e.DELETE("/:id", c.DeleteSoft)
+	client.GET("/:id", c.GetById)
+	client.POST("/upload-file/:id", c.UploadAvatar)
+	client.GET("/all-client/:max", c.GetAll)
+	client.DELETE("/:id", c.DeleteSoft)
 }
 
 func AppointmentReview(e *echo.Echo, rev handler.ITechnicalReviewCRUDQuery, appoint handler.IAppointmentCRUDQuery) {

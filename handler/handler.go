@@ -63,6 +63,7 @@ type IClientCRUD interface {
 	Update(ID uint, client *dto.EditClient) error
 	GetByID(ID uint) (*model.Client, error)
 	GetAll(max int) (*model.Clients, error)
+	UpdatePicture(ID uint, rute string) error
 	DeleteSoft(ID uint) error
 	DeletePermanent(ID uint) error
 }

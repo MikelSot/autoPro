@@ -68,3 +68,8 @@ type Claim struct {
 	Role     uint8  `json:"role"`
 	jwt.StandardClaims
 }
+
+type UploadAvatar struct {
+	ID       uint   `json:"id"`
+	Picture  string `json:"picture"`
+}

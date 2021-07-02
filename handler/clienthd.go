@@ -3,7 +3,9 @@ package handler
 import (
 	"github.com/MikelSot/autoPro/model/dto"
 	"github.com/labstack/echo/v4"
+	"io"
 	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -147,6 +149,49 @@ func (c *clientHd) DeleteSoft(e echo.Context) error {
 	return e.JSON(http.StatusOK, res)
 }
 
+
+func (c *clientHd) UploadAvatar(e echo.Context) error  {
+	ID, err := strconv.Atoi(e.Param("id"))
+	if err != nil {
+		res := NewResponse(Error, errorId, nil)
+		return e.JSON(http.StatusBadRequest, res)
+	}
+
+	file, err := e.FormFile("file")
+	if err != nil {
+		return err
+	}
+	src, err := file.Open()
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+
+	extension := strings.Split(file.Filename, ".")[1]
+	archive := "uploads/avatars/" +"@"+strconv.Itoa(ID)+"."+ extension
+	// ruta destino
+	dst, err := os.Create(archive)
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+
+	// Copia ruta archivo a ruta destino
+	if _, err = io.Copy(dst, src); err != nil {
+		return err
+	}
+
+	err = c.crudExists.UpdatePicture(uint(ID), archive)
+	if err != nil {
+		response := NewResponse(Error, errorClientIDDoesNotExist, nil)
+		return e.JSON(http.StatusBadRequest, response)
+	}
+
+	res := NewResponse(Message, ok, nil)
+	return e.JSON(http.StatusOK, res)
+}
+
+
 func areDataValidClient(data *dto.SignInClient, c clientHd, e echo.Context) (error,bool) {
 	data.Email = strings.TrimSpace(data.Email)
 	data.Name = strings.TrimSpace(data.Name)
@@ -163,6 +208,8 @@ func areDataValidClient(data *dto.SignInClient, c clientHd, e echo.Context) (err
 	}
 	return nil, true
 }
+
+
 
 func isValidDniOrUriClient(ID uint, data *dto.EditClient, c clientHd, e echo.Context) (error,bool) {
 	data.Email = strings.TrimSpace(data.Email)
