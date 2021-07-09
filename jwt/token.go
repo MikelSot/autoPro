@@ -13,6 +13,7 @@ func GenerateToken(data *dto.DataClient) (string, error) {
 		Name:     data.Name,
 		LastName: data.LastName,
 		Email:    data.Email,
+		Uri:      data.Uri,
 		State:    data.State,
 		Role:     data.Role,
 
@@ -38,12 +39,12 @@ func ValidateToken(t string) (dto.Claim, error) {
 		return dto.Claim{}, err
 	}
 
-	if !token.Valid{
+	if !token.Valid {
 		return dto.Claim{}, errors.New("token no valid")
 	}
 
 	// optener el claim de los claim
-	claim , ok := token.Claims.(*dto.Claim)
+	claim, ok := token.Claims.(*dto.Claim)
 	if !ok {
 		return dto.Claim{}, errors.New("no se puedo optener los claim")
 	}

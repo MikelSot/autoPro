@@ -32,6 +32,10 @@ func StartServer()  {
 	e := echo.New()
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
 
 	Login(e, &client)
 	Home(e, &product,&employee, &service, &workshop)

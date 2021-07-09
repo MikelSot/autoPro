@@ -55,6 +55,7 @@ type DataClient struct {
 	Picture  string `json:"picture"`
 	Address  string `json:"address"`
 	State    string `json:"state"`
+	Uri      string `json:"uri"`
 	Role     uint8  `json:"role"`
 }
 
@@ -64,6 +65,7 @@ type Claim struct {
 	Name     string `json:"name"`
 	LastName string `json:"last_name"`
 	Email    string `json:"email"`
+	Uri      string `json:"uri"`
 	State    string `json:"state"`
 	Role     uint8  `json:"role"`
 	jwt.StandardClaims

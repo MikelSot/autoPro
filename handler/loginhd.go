@@ -36,7 +36,7 @@ func (l *login) Login(e echo.Context) error {
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
-	exists, client,_ := l.crudExists.QueryEmailExists(data.Email)
+	exists, client, _ := l.crudExists.QueryEmailExists(data.Email)
 	if !exists {
 		resp := NewResponse(Error, errorEmailIncorrect, client)
 		return e.JSON(http.StatusBadRequest, resp)
@@ -62,6 +62,7 @@ func (l *login) Login(e echo.Context) error {
 		Picture:  client.Picture,
 		Address:  client.Address,
 		State:    client.State,
+		Uri:      client.Uri,
 		Role:     client.RoleID,
 	}
 	token, err := jwt.GenerateToken(&dataClient)
