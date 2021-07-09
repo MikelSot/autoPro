@@ -36,6 +36,9 @@ func StartServer()  {
 		AllowOrigins: []string{"*"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
+	e.Static("/uploads/", "uploads/")
+
+
 
 	Login(e, &client)
 	Home(e, &product,&employee, &service, &workshop)

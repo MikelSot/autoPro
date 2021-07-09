@@ -55,16 +55,16 @@ func insertDataWorkshop() error {
 
 func insertDataService() error {
 	services := model.Services{
-		{Name: "mantenimiento del vehículo", Description: "Revisar solo motor del vehículo"},
-		{Name: "Reparación de partes del vehículo", Description: " Reparar la parte dañada del vehículo"},
-		{Name: "Soldado", Description: " Soldar una parte dañada del vehículo (quebrada)"},
-		{Name: "Parchado", Description: "Rellenar las partes que faltan en el vehículo "},
+		{Name: "Soldado", Description: " Soldar una parte dañada del vehículo (quebrada)", Picture: "/uploads/img/services/pexels-cottonbro-4489743.jpg"},
+		{Name: "Creación de partes del vehículo ", Description: "Si una parte del vehículo no se encuentra en repuestos, se procede a crear uno nuevo", Picture: "/uploads/img/services/pexels-chevanon-photography-1108101.jpg"},
+		{Name: "Cambio de llantas Llanta", Description: "Llanta desinfladas o dañadas se cambian por nuevas", Picture: "/uploads/img/services/pexels-andrea-piacquadio-3806249.jpg"},
+		{Name: "mantenimiento del vehículo", Description: "Revisar solo motor del vehículo", Picture: "/uploads/img/services/auto-repair-3691962_1280.jpg"},
+		{Name: "Reparación de partes del vehículo", Description: " Reparar la parte dañada del vehículo", Picture: "/uploads/img/services/auto-2861859_1920.jpg"},
+		{Name: "Parchado", Description: "Rellenar las partes que faltan en el vehículo ", Picture: "/uploads/img/services/hands-of-car-mechanic-with-wrench-in-garage.jpg"},
 		{Name: "Cambio de aceite", Description: "Cambiar el aceite del vehículo por uno nuevo"},
+		{Name: "Auxilio mecánico", Description: ""},
 		{Name: "Venta de repuestos", Description: "Repuestos nuevos en venta de las partes de vehículos"},
 		{Name: "Cambio de muelle", Description: "Cambiar un muelle dañado o quebrado"},
-		{Name: "Cambio de llantas Llanta", Description: "Llanta desinfladas o dañadas se cambian por nuevas"},
-		{Name: "Creación de partes del vehículo ", Description: "Si una parte del vehículo no se encuentra en repuestos, se procede a crear uno nuevo"},
-		{Name: "Auxilio mecánico", Description: ""},
 	}
 
 	DB().Select("Name", "Description").Create(&services)
@@ -99,12 +99,13 @@ func insertDataCategory() error {
 
 func insertDataProduct() error {
 	products := model.Products{
-		{Name: "Llantas", Stock: 20, CategoryID: 1, UnitPrice: 180},
+		{Name: "Tubo de escape", Stock: 15, CategoryID: 2, UnitPrice: 100, Picture: "/uploads/img/products/exhaust-3538388_1920.jpg"},
+		{Name: "Llantas", Stock: 20, CategoryID: 1, UnitPrice: 180, Picture: "/uploads/img/products/mature-2875251_1920.jpg"},
+		{Name: "Tornillos", Stock: 100, CategoryID: 4, UnitPrice: 4.5, Picture: "/uploads/img/products/pexels-pixabay-162553.jpg"},
+		{Name: "Filtro", Stock: 50, CategoryID: 4, UnitPrice: 1.5, Picture: "/uploads/img/products/mqdefault.jpg"},
+		{Name: "Silenciador", Stock: 10, CategoryID: 2, UnitPrice: 80, Picture: "/uploads/img/products/H4cc16d632d9c4d3aa41ef40d3f1fb4008.jpg"},
+		{Name: "Tuercas", Stock: 10, CategoryID: 2, UnitPrice: 80, Picture: "/uploads/img/products/pexels-cottonbro-4480531.jpg"},
 		{Name: "Muelle", Stock: 30, CategoryID: 2, UnitPrice: 120},
-		{Name: "Tornillos", Stock: 100, CategoryID: 4, UnitPrice: 4.5},
-		{Name: "Tuercas", Stock: 50, CategoryID: 4, UnitPrice: 1.5},
-		{Name: "Tubo de escape", Stock: 15, CategoryID: 2, UnitPrice: 100},
-		{Name: "Silenciador", Stock: 10, CategoryID: 2, UnitPrice: 80},
 	}
 
 	DB().Select("Name", "Stock", "CategoryID", "UnitPrice").Create(&products)

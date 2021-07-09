@@ -39,8 +39,8 @@ func (p *ProductDao) GetByID(ID uint) (*model.Product, error) {
 }
 
 func (p *ProductDao) GetAll(max int) (*model.Products, error) {
-	if  max < MaxGetAll {
-		max = MaxGetAll
+	if  max < MaxGetAllHome {
+		max = MaxGetAllHome
 	}
 	products := model.Products{}
 	DB().Limit(max).Find(&products)

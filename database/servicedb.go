@@ -37,8 +37,8 @@ func (s ServiceDao) GetByID(ID uint8) (*model.Service, error) {
 }
 
 func (s ServiceDao) GetAll(max int) (*model.Services, error) {
-	if  max < MaxGetAll {
-		max = MaxGetAll
+	if  max < MaxGetAllHome {
+		max = MaxGetAllHome
 	}
 	services := model.Services{}
 	DB().Limit(max).Find(&services)

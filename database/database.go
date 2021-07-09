@@ -18,6 +18,7 @@ const (
 	ZeroRowsAffected = 0
 	MaxGetAll        = 10
 	MaxComment       = 10
+	MaxGetAllHome	 = 6
 )
 
 
