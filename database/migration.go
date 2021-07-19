@@ -57,7 +57,7 @@ func insertDataService() error {
 	services := model.Services{
 		{Name: "Soldado", Description: " Soldar una parte dañada del vehículo (quebrada)", Picture: "/uploads/img/services/pexels-cottonbro-4489743.jpg"},
 		{Name: "Creación de partes del vehículo ", Description: "Si una parte del vehículo no se encuentra en repuestos, se procede a crear uno nuevo", Picture: "/uploads/img/services/pexels-chevanon-photography-1108101.jpg"},
-		{Name: "Cambio de llantas Llanta", Description: "Llanta desinfladas o dañadas se cambian por nuevas", Picture: "/uploads/img/services/pexels-andrea-piacquadio-3806249.jpg"},
+		{Name: "Cambio de Llanta", Description: "Llanta desinfladas o dañadas se cambian por nuevas", Picture: "/uploads/img/services/pexels-andrea-piacquadio-3806249.jpg"},
 		{Name: "mantenimiento del vehículo", Description: "Revisar solo motor del vehículo", Picture: "/uploads/img/services/auto-repair-3691962_1280.jpg"},
 		{Name: "Reparación de partes del vehículo", Description: " Reparar la parte dañada del vehículo", Picture: "/uploads/img/services/auto-2861859_1920.jpg"},
 		{Name: "Parchado", Description: "Rellenar las partes que faltan en el vehículo ", Picture: "/uploads/img/services/hands-of-car-mechanic-with-wrench-in-garage.jpg"},
@@ -67,7 +67,7 @@ func insertDataService() error {
 		{Name: "Cambio de muelle", Description: "Cambiar un muelle dañado o quebrado"},
 	}
 
-	DB().Select("Name", "Description").Create(&services)
+	DB().Select("Name", "Description", "Picture").Create(&services)
 
 	service_workshops := []model.Service_Workshops{
 		{1, 1}, {1, 2}, {1, 3},
@@ -108,7 +108,7 @@ func insertDataProduct() error {
 		{Name: "Muelle", Stock: 30, CategoryID: 2, UnitPrice: 120},
 	}
 
-	DB().Select("Name", "Stock", "CategoryID", "UnitPrice").Create(&products)
+	DB().Select("Name", "Stock", "CategoryID", "UnitPrice", "Picture").Create(&products)
 
 	return nil
 }
@@ -135,3 +135,4 @@ func migrationAndInsert() (error, bool) {
 	flag = true
 	return nil, flag
 }
+

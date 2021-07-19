@@ -2,16 +2,14 @@ package database
 
 import (
 	"github.com/MikelSot/autoPro/model"
+	"github.com/MikelSot/autoPro/model/dto"
 	"strconv"
 	"time"
 )
 
 const (
+	minAppointment = 1
 	maxAppointment = 20
-)
-
-var (
-	minAppointment = 0
 )
 
 
@@ -25,12 +23,33 @@ func NewAppointmentDao() AppointmentDao {
 }
 
 
-func (a *AppointmentDao) Create(appointment *model.Appointment) error {
+func (a *AppointmentDao) Create(dto *dto.AppointmentCreate) error {
+	appointment := model.Appointment{
+		Workshop     :dto.Workshop,
+		Service      :dto.Service,
+		Description  :dto.Description,
+		DateHour     :dto.DateHour,
+		OrderAttention:dto.OrderAttention ,
+		VehicleType  : dto.VehicleType,
+		PickUp       : dto.PickUp,
+		ClientID     : dto.ClientID,
+	}
 	DB().Create(&appointment)
 	return nil
 }
 
-func (a *AppointmentDao) Update(ID uint, appointment *model.Appointment) error {
+func (a *AppointmentDao) Update(ID uint, dto *dto.AppointmentUpdate) error {
+	appointment := model.Appointment{
+		Workshop     :dto.Workshop,
+		Service      :dto.Service,
+		Description  :dto.Description,
+		DateHour     :dto.DateHour,
+		OrderAttention:dto.OrderAttention ,
+		State        : dto.State,
+		VehicleType  : dto.VehicleType,
+		PickUp       : dto.PickUp,
+		ClientID     : dto.ClientID,
+	}
 	appointmentID := model.Appointment{}
 	appointmentID.ID = ID
 	DB().Model(&appointmentID).Updates(appointment)
@@ -115,7 +134,7 @@ func (a *AppointmentDao) QueryWorkshopExists(name string) (bool, error) {
 // signValid firltra el N° que estan disponibles para la cita
 func signValid(busy map[string]string)  map[int]string{
 	numbers := make(map[int]string)
-	for i := minAppointment; i <= maxAppointment; minAppointment++ {
+	for i := minAppointment; i <= maxAppointment; i++ {
 		numbers[i] = strconv.Itoa(i)
 	}
 

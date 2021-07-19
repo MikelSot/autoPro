@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/MikelSot/autoPro/model"
+	"github.com/MikelSot/autoPro/model/dto"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"regexp"
@@ -37,18 +37,17 @@ func NewAppointmentHd(cq IAppointmentCRUDQuery) appointmentHd {
 }
 
 func (a *appointmentHd) Create(e echo.Context) error {
-	data := model.Appointment{}
-	err := e.Bind(&data)
-	if err != nil {
+	data := dto.AppointmentCreate{}
+	if err := e.Bind(&data);err != nil {
 		resp := NewResponse(Error, errorStructAppointment, nil)
-		return e.JSON(http.StatusInternalServerError, resp)
+		return e.JSON(http.StatusInternalServerError,resp)
 	}
 
 	if err, bool := areDataValidAppointment(&data, *a, e); !bool {
 		return err
 	}
 
-	err = a.crudQuery.Create(&data)
+	err := a.crudQuery.Create(&data)
 	if err != nil {
 		resp := NewResponse(Error, errorStructAppointment, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
@@ -65,14 +64,15 @@ func (a *appointmentHd) Update(e echo.Context) error {
 		return e.JSON(http.StatusBadRequest, res)
 	}
 
-	data := model.Appointment{}
+	data := dto.AppointmentUpdate{}
 	err = e.Bind(&data)
 	if err != nil {
 		resp := NewResponse(Error, errorStructAppointment, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
 
-	if err, bool := areDataValidAppointment(&data, *a, e); !bool {
+	dataValidUpdate := isDataValidUpdate(&data)
+	if err, bool := areDataValidAppointment(&dataValidUpdate, *a, e); !bool {
 		return err
 	}
 
@@ -152,7 +152,7 @@ func (a *appointmentHd) AllAppointmentClient(e echo.Context) error {
 	return e.JSON(http.StatusOK, res)
 }
 
-func areDataValidAppointment(data *model.Appointment, a appointmentHd, e echo.Context) (error, bool) {
+func areDataValidAppointment(data *dto.AppointmentCreate, a appointmentHd, e echo.Context) (error, bool) {
 	data.Workshop = strings.TrimSpace(data.Workshop)
 	data.Service = strings.TrimSpace(data.Service)
 	data.Description = strings.TrimSpace(data.Description)
@@ -184,6 +184,20 @@ func areDataValidAppointment(data *model.Appointment, a appointmentHd, e echo.Co
 		return e.JSON(http.StatusBadRequest, resp), false
 	}
 	return nil, true
+}
+
+func isDataValidUpdate(data *dto.AppointmentUpdate) dto.AppointmentCreate {
+	 dataValid := dto.AppointmentCreate{
+		Workshop     :data.Workshop,
+		Service      :data.Service,
+		Description  :data.Description,
+		DateHour     :data.DateHour,
+		OrderAttention:data.OrderAttention ,
+		VehicleType  : data.VehicleType,
+		PickUp       : data.PickUp,
+		ClientID     : data.ClientID,
+	}
+	return dataValid
 }
 
 func isNumber(num string) bool {

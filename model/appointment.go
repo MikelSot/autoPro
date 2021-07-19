@@ -13,7 +13,6 @@ type Appointment struct {
 	VehicleType      string    `gorm:"type:varchar(60); default:''; not null" json:"vehicle_type"`
 	PickUp           bool      `gorm:"default:false; not null" json:"pick_up"`
 	ClientID         uint      `gorm:"not null" json:"client_id"`
-	EmployeeID       uint      `gorm:"default:null" json:"employee_id"`
 	TimeModel
 }
 

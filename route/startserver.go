@@ -33,6 +33,7 @@ func StartServer()  {
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		//AllowOrigins: []string{"http://localhost:3000"},
 		AllowOrigins: []string{"*"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
@@ -41,7 +42,7 @@ func StartServer()  {
 
 
 	Login(e, &client)
-	Home(e, &product,&employee, &service, &workshop)
+	Home(e, &product,&employee, &service, &workshop, &appointment)
 	Client(e, &client)
 	Blog(e,&blog, &comment)
 	Invoice(e, &invoice,&invoiceItem)
@@ -52,7 +53,7 @@ func StartServer()  {
 	Role(e, &role)
 	Service(e, &service)
 
-	err = e.Start(":8080")
+	err = e.Start(":5000")
 	if err != nil {
 		log.Printf("Error en el servidor: %v\n", err)
 	}

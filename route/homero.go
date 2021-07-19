@@ -18,16 +18,20 @@ func Login(e *echo.Echo, storage handler.IClientCRUDExists) {
 	e.POST("/v1/login", h.Login)
 }
 
-func Home(e *echo.Echo, iProd iProduct, iEmp iEmployee, ISer iService, iWork iWorkshop) {
+func Home(e *echo.Echo, iProd iProduct, iEmp iEmployee, ISer iService, iWork iWorkshop, appoint handler.IAppointmentCRUDQuery) {
 	workshop := handler.NewWorkshopHd(iWork)
 	service := handler.NewServiceHd(ISer)
 	employee := handler.NewEmployeeHd(iEmp)
 	product := handler.NewProductHd(iProd)
+	appointment := handler.NewAppointmentHd(appoint)
+
 
 	e.GET("/v1/product-home/:max", product.GetAll)
 	e.GET("/v1/workshop-home/:max", workshop.GetAll)
 	e.GET("/v1/service-home/:max", service.GetAll)
 	e.GET("/v1/employee-home/:max", employee.DataEmployeeHome)
+	e.GET("/v1/order-available-home/", appointment.AllOrderAttentionAvailable)
+
 }
 
 func Client(e *echo.Echo, storage handler.IClientCRUDExists) {
