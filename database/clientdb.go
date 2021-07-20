@@ -102,7 +102,6 @@ func (c *ClientDao) UpdatePicture(ID uint, rute string) error {
 func (c *ClientDao) QueryEmailExists(email string) (bool,model.Client, error) {
 	client := model.Client{}
 	values := DB().Limit(1).Find(&client, "email = ?", email)
-	//values := DB().Limit(1).Select("Email").Find(&client, "email = ?", email)
 	if values.RowsAffected != ZeroRowsAffected {
 		return true, client,nil
 	}

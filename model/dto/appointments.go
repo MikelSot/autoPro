@@ -24,3 +24,8 @@ type AppointmentUpdate struct {
 	PickUp           bool      `json:"pick_up"`
 	ClientID         uint      `json:"client_id"`
 }
+
+
+type AppointmentUpdateState struct {
+	State   string  `json:"state"`
+}

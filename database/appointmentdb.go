@@ -56,6 +56,16 @@ func (a *AppointmentDao) Update(ID uint, dto *dto.AppointmentUpdate) error {
 	return nil
 }
 
+func (a *AppointmentDao) UpdateState(ID uint, dto *dto.AppointmentUpdateState) error {
+	appointment := model.Appointment{
+		State: dto.State,
+	}
+	appointmentID := model.Appointment{}
+	appointmentID.ID = ID
+	DB().Model(&appointmentID).Updates(appointment)
+	return nil
+}
+
 func (a *AppointmentDao) GetAll(max int) (*model.Appointments, error) {
 	if  max < MaxGetAll{
 		max = MaxGetAll
@@ -114,7 +124,7 @@ func (a *AppointmentDao) AllAppointmentClient(ID uint, max int) (*model.Appointm
 
 func (a *AppointmentDao) QueryServiceExists(name string) (bool, error) {
 	service := model.Service{}
-	values := DB().Limit(1).Select("name").Find(&service, "name = ?", name)
+	values := DB().Limit(1).Find(&service, "name = ?", name)
 	if values.RowsAffected != ZeroRowsAffected {
 		return true, nil
 	}
@@ -123,13 +133,12 @@ func (a *AppointmentDao) QueryServiceExists(name string) (bool, error) {
 
 func (a *AppointmentDao) QueryWorkshopExists(name string) (bool, error) {
 	workshop := model.Workshop{}
-	values := DB().Limit(1).Select("name").Find(&workshop, "name = ?", name)
+	values := DB().Limit(1).Find(&workshop, "name = ?", name)
 	if values.RowsAffected != ZeroRowsAffected {
 		return true, nil
 	}
 	return false, nil
 }
-
 
 // signValid firltra el N° que estan disponibles para la cita
 func signValid(busy map[string]string)  map[int]string{

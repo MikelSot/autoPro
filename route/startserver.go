@@ -8,7 +8,7 @@ import (
 	"log"
 )
 
-func StartServer()  {
+func StartServer() {
 	err := jwt.LoadFiles("jwt/app.rsa", "jwt/app.rsa.public")
 	if err != nil {
 		log.Fatalf("no se pudo cargar los certificados: %v", err)
@@ -35,17 +35,25 @@ func StartServer()  {
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		//AllowOrigins: []string{"http://localhost:3000"},
 		AllowOrigins: []string{"*"},
-		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+		AllowHeaders: []string{
+			echo.HeaderOrigin,
+			echo.HeaderAuthorization,
+			echo.HeaderContentType,
+			echo.HeaderAccept,
+			echo.HeaderAccessControlAllowHeaders,
+			echo.POST,
+			echo.DELETE,
+			echo.GET,
+			echo.PUT,
+		},
 	}))
 	e.Static("/uploads/", "uploads/")
 
-
-
 	Login(e, &client)
-	Home(e, &product,&employee, &service, &workshop, &appointment)
+	Home(e, &product, &employee, &service, &workshop, &appointment)
 	Client(e, &client)
-	Blog(e,&blog, &comment)
-	Invoice(e, &invoice,&invoiceItem)
+	Blog(e, &blog, &comment)
+	Invoice(e, &invoice, &invoiceItem)
 	Product(e, &product, &comment)
 	AppointmentReview(e, &technicalReview, &appointment)
 	PaymentMethod(e, &method)

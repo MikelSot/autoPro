@@ -14,7 +14,7 @@ import (
 const (
 	maxLenEmail               = 10
 	at                        = "@"
-	regexName                 = `([a-zA-Z]{3,})`
+	regexName                 = `([a-zA-Z]{2,})`
 	regexDni                  = `([1-9]{8})`
 	regexEmail                = `([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9])+\.)+([a-zA-Z0-9]{2,4})`
 	ok						  = "ok"

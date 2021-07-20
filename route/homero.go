@@ -55,6 +55,7 @@ func AppointmentReview(e *echo.Echo, rev handler.ITechnicalReviewCRUDQuery, appo
 	appointment.POST("", a.Create)
 	appointment.DELETE("/:id", a.DeleteSoft)
 	appointment.PUT("/:id", a.Update)
+	appointment.PUT("/state/:id", a.UpdateState)
 	appointment.GET("/order-available/", a.AllOrderAttentionAvailable)
 	appointment.GET("/review/:id/:max", r.AllReviewClient)
 	appointment.GET("/review/:id", r.GetById)

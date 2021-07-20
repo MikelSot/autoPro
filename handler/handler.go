@@ -92,6 +92,7 @@ type IEmployeeCRUD interface {
 type IAppointmentCRUD interface {
 	Create(appointment *dto.AppointmentCreate) error
 	Update(ID uint, appointment *dto.AppointmentUpdate) error
+	UpdateState(ID uint, dto *dto.AppointmentUpdateState) error
 	GetAll(max int) (*model.Appointments, error)
 	DeleteSoft(ID uint) error
 	DeletePermanent(ID uint) error

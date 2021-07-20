@@ -86,6 +86,32 @@ func (a *appointmentHd) Update(e echo.Context) error {
 	return e.JSON(http.StatusOK, resp)
 }
 
+
+func (a *appointmentHd) UpdateState(e echo.Context) error {
+	ID, err := strconv.Atoi(e.Param("id"))
+	if err != nil {
+		res := NewResponse(Error, errorId, nil)
+		return e.JSON(http.StatusBadRequest, res)
+	}
+
+	data := dto.AppointmentUpdateState{}
+	err = e.Bind(&data)
+	if err != nil {
+		resp := NewResponse(Error, errorStructAppointment, nil)
+		return e.JSON(http.StatusInternalServerError, resp)
+	}
+
+	err = a.crudQuery.UpdateState(uint(ID), &data)
+	if err != nil {
+		resp := NewResponse(Error, errorStructAppointment, nil)
+		return e.JSON(http.StatusInternalServerError, resp)
+	}
+
+	resp := NewResponse(Message, updatedAppointment, nil)
+	return e.JSON(http.StatusOK, resp)
+}
+
+
 func (a *appointmentHd) GetAll(e echo.Context) error {
 	max, err := strconv.Atoi(e.Param("max"))
 	if err != nil {
