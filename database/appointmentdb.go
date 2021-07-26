@@ -71,7 +71,7 @@ func (a *AppointmentDao) GetAll(max int) (*model.Appointments, error) {
 		max = MaxGetAll
 	}
 	appointments := model.Appointments{}
-	DB().Limit(max).Find(&appointments)
+	DB().Limit(max).Find(&appointments).Order("id desc")
 	return &appointments, nil
 }
 
@@ -110,6 +110,7 @@ func (a *AppointmentDao) AllAppointmentClient(ID uint, max int) (*model.Appointm
 	}
 	appointments := model.Appointments{}
 	DB().Limit(max).Select(
+		"id",
 		"Workshop",
 		"Service",
 		"Description",
@@ -117,7 +118,7 @@ func (a *AppointmentDao) AllAppointmentClient(ID uint, max int) (*model.Appointm
 		"OrderAttention",
 		"VehicleType",
 		"PickUp",
-	).Find(&appointments, "client_id = ?", ID)
+	).Find(&appointments, "client_id = ?", ID).Order("id desc")
 
 	return &appointments, nil
 }

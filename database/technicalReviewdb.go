@@ -57,6 +57,6 @@ func (t *TechnicalReviewDao) AllReviewClient(ID uint, max int) (*model.Technical
 		max = MaxGetAll
 	}
 	reviews := model.TechnicalReviews{}
-	DB().Limit(max).Find(&reviews, "client_id = ?", ID)
+	DB().Limit(max).Find(&reviews, "client_id = ?", ID).Order("id desc")
 	return &reviews, nil
 }

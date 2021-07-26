@@ -59,7 +59,7 @@ func insertDataService() error {
 		{Name: "Soldado", Description: "Soldar una parte dañada del vehículo (quebrada)", Picture: "/uploads/img/services/pexels-cottonbro-4489743.jpg"},
 		{Name: "Creación de partes del vehículo", Description: "Si una parte del vehículo no se encuentra en repuestos, se procede a crear uno nuevo", Picture: "/uploads/img/services/pexels-chevanon-photography-1108101.jpg"},
 		{Name: "Cambio de Llanta", Description: "Llanta desinfladas o dañadas se cambian por nuevas", Picture: "/uploads/img/services/pexels-andrea-piacquadio-3806249.jpg"},
-		{Name: "mantenimiento del vehículo", Description: "Revisar solo motor del vehículo", Picture: "/uploads/img/services/auto-repair-3691962_1280.jpg"},
+		{Name: "Mantenimiento del vehículo", Description: "Revisar solo motor del vehículo", Picture: "/uploads/img/services/auto-repair-3691962_1280.jpg"},
 		{Name: "Reparación de partes del vehículo", Description: "Reparar la parte dañada del vehículo", Picture: "/uploads/img/services/auto-2861859_1920.jpg"},
 		{Name: "Parchado", Description: "Rellenar las partes que faltan en el vehículo ", Picture: "/uploads/img/services/hands-of-car-mechanic-with-wrench-in-garage.jpg"},
 		{Name: "Cambio de aceite", Description: "Cambiar el aceite del vehículo por uno nuevo"},

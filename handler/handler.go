@@ -73,6 +73,7 @@ type IQueryExists interface {
 	QueryEmailExists(email string) (bool,model.Client, error)
 	QueryDniExists(dni string) (bool,uint, error)
 	QueryUriExists(uri string) (bool, error)
+	SelectNameID() (dto.ClientIdNames, error)
 }
 
 // IEmployeeCRUD interface crud de empleado

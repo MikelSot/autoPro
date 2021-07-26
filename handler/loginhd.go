@@ -49,6 +49,7 @@ func (l *login) Login(e echo.Context) error {
 		resp := NewResponse(Error, errorEmailOrPassword, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
+	password = data.Password // getByID
 
 	dataClient := dto.DataClient{
 		ID:       client.ID,

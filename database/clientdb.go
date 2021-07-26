@@ -99,6 +99,12 @@ func (c *ClientDao) UpdatePicture(ID uint, rute string) error {
 	return nil
 }
 
+func (c *ClientDao) SelectNameID() (dto.ClientIdNames, error) {
+	idNames := dto.ClientIdNames{}
+	db.Table("clients").Select("id, name, last_name").Scan(&idNames)
+	return idNames,nil
+}
+
 func (c *ClientDao) QueryEmailExists(email string) (bool,model.Client, error) {
 	client := model.Client{}
 	values := DB().Limit(1).Find(&client, "email = ?", email)

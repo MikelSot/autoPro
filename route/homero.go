@@ -39,11 +39,13 @@ func Client(e *echo.Echo, storage handler.IClientCRUDExists) {
 	client := e.Group("/v1/client")
 	client.Use(middleware.Authentication)
 
-	client.PUT("/edit-profile/:id", c.EditClient)
+	client.PUT("/edit-profile", c.EditClient)
+	//client.PUT("/edit-profile/:id", c.EditClient)
 	client.GET("/:id", c.GetById)
-	client.POST("/upload-file/:id", c.UploadAvatar)
+	client.POST("/upload-file", c.UploadAvatar)
 	client.GET("/all-client/:max", c.GetAll)
 	client.DELETE("/:id", c.DeleteSoft)
+	client.GET("/id-name", c.SelectNameID)
 }
 
 func AppointmentReview(e *echo.Echo, rev handler.ITechnicalReviewCRUDQuery, appoint handler.IAppointmentCRUDQuery) {
@@ -52,6 +54,7 @@ func AppointmentReview(e *echo.Echo, rev handler.ITechnicalReviewCRUDQuery, appo
 	appointment := e.Group("/v1/appointment")
 	appointment.Use(middleware.Authentication)
 	appointment.GET("/:id/:max", a.AllAppointmentClient)
+	appointment.GET("/all/:max", a.GetAll)
 	appointment.POST("", a.Create)
 	appointment.DELETE("/:id", a.DeleteSoft)
 	appointment.PUT("/:id", a.Update)

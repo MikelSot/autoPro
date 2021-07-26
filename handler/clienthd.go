@@ -31,6 +31,12 @@ const (
 	errorGetAll				  = "Hubo un problema al obtener todas los clientes"
 )
 
+var(
+	password string
+	id int
+)
+
+
 type clientHd struct {
 	crudExists IClientCRUDExists
 }
@@ -68,12 +74,6 @@ func (c *clientHd) SingIn(e echo.Context) error {
 }
 
 func (c *clientHd) EditClient(e echo.Context) error {
-	ID, err := strconv.Atoi(e.Param("id"))
-	if err != nil {
-		res := NewResponse(Error, errorId, nil)
-		return e.JSON(http.StatusBadRequest, res)
-	}
-
 	data := dto.EditClient{}
 	if error := e.Bind(&data); error != nil {
 		resp := NewResponse(Error, errorStruct, nil)
@@ -85,11 +85,11 @@ func (c *clientHd) EditClient(e echo.Context) error {
 		return error
 	}
 
-	if error, bool := isValidDniOrUriClient( uint(ID) ,&data, *c, e); !bool {
+	if error, bool := isValidDniOrUriClient(data.ID ,&data, *c, e); !bool {
 		return error
 	}
 
-	if error := c.crudExists.Update(uint(ID), &data); error != nil {
+	if error := c.crudExists.Update(data.ID, &data); error != nil {
 		resp := NewResponse(Error, errorStruct, nil)
 		return e.JSON(http.StatusInternalServerError, resp)
 	}
@@ -105,12 +105,13 @@ func (c *clientHd) GetById(e echo.Context) error {
 		return e.JSON(http.StatusBadRequest, resp)
 	}
 
+	id = ID
 	data, err := c.crudExists.GetByID(uint(ID))
 	if err != nil {
 		resp := NewResponse(Error, errorClientIDDoesNotExist, nil)
 		return e.JSON(http.StatusBadRequest, resp)
 	}
-
+	data.Password = password
 	res := NewResponse(Message, ok, data)
 	return e.JSON(http.StatusOK, res)
 }
@@ -149,26 +150,35 @@ func (c *clientHd) DeleteSoft(e echo.Context) error {
 	return e.JSON(http.StatusOK, res)
 }
 
+func (c *clientHd) SelectNameID(e echo.Context) error {
+	idNames,err := c.crudExists.SelectNameID()
+	if err != nil {
+		response := NewResponse(Error, errorGetAll, nil)
+		return e.JSON(http.StatusBadRequest, response)
+	}
+	res := NewResponse(Message, ok, idNames)
+	return e.JSON(http.StatusOK, res)
+}
+
 
 func (c *clientHd) UploadAvatar(e echo.Context) error  {
-	ID, err := strconv.Atoi(e.Param("id"))
-	if err != nil {
-		res := NewResponse(Error, errorId, nil)
-		return e.JSON(http.StatusBadRequest, res)
-	}
 
+	getId := strconv.Itoa(id)
 	file, err := e.FormFile("file")
 	if err != nil {
 		return err
 	}
+
+	extension := strings.Split(file.Filename, ".")[1]
+	archive := "uploads/avatars/" +"@"+ getId +"."+ extension
+
 	src, err := file.Open()
 	if err != nil {
 		return err
 	}
 	defer src.Close()
 
-	extension := strings.Split(file.Filename, ".")[1]
-	archive := "uploads/avatars/" +"@"+strconv.Itoa(ID)+"."+ extension
+
 	// ruta destino
 	dst, err := os.Create(archive)
 	if err != nil {
@@ -181,7 +191,8 @@ func (c *clientHd) UploadAvatar(e echo.Context) error  {
 		return err
 	}
 
-	err = c.crudExists.UpdatePicture(uint(ID), archive)
+
+	err = c.crudExists.UpdatePicture(uint(id), archive)
 	if err != nil {
 		response := NewResponse(Error, errorClientIDDoesNotExist, nil)
 		return e.JSON(http.StatusBadRequest, response)

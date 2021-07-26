@@ -20,6 +20,14 @@ type LoginClient struct {
 	Password string `json:"password"`
 }
 
+// vincular cliente
+type ClientIdNames []ClientIdName
+type ClientIdName struct {
+	ID       uint   `json:"id"`
+	Name     string `json:"name"`
+	LastName string `json:"last_name"`
+}
+
 // registrase
 type SignInClient struct {
 	Name     string `json:"name"`
@@ -30,11 +38,12 @@ type SignInClient struct {
 
 //actualizar informacion
 type EditClient struct {
+	ID       uint   `json:"id"`
 	Name     string `json:"name"`
 	LastName string `json:"last_name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
-	Dni      string `gorm:"type:char(8)" json:"dni"`
+	Dni      string `json:"dni"`
 	Ruc      string `json:"ruc"`
 	Phone    string `json:"phone"`
 	Picture  string `json:"picture"`
@@ -49,7 +58,7 @@ type DataClient struct {
 	LastName string `json:"last_name"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
-	Dni      string `gorm:"type:char(8)" json:"dni"`
+	Dni      string `json:"dni"`
 	Ruc      string `json:"ruc"`
 	Phone    string `json:"phone"`
 	Picture  string `json:"picture"`
