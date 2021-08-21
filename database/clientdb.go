@@ -49,7 +49,7 @@ func (c *ClientDao) Update(ID uint, clientDto *dto.EditClient) error {
 		Name:     clientDto.Name,
 		LastName: clientDto.LastName,
 		Email:    clientDto.Email,
-		Password: encrypt(clientDto.Password),
+		//Password: encrypt(clientDto.Password),
 		Dni:      clientDto.Dni,
 		Ruc:      clientDto.Ruc,
 		Phone:    clientDto.Phone,

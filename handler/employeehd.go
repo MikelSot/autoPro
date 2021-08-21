@@ -212,7 +212,7 @@ func editDataEmployeeClient(edit *dto.EditClient, data dto.DataEmployee)  {
 	edit.Name =  data.Name
 	edit.LastName = data.LastName
 	edit.Email = data.Email
-	edit.Password = data.Password
+	//edit.Password = data.Password
 	edit.Dni = data.Dni
 	edit.Phone = data.Phone
 	edit.Picture = data.Picture

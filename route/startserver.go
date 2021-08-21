@@ -33,8 +33,8 @@ func StartServer() {
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		//AllowOrigins: []string{"http://localhost:3000"},
-		AllowOrigins: []string{"*"},
+		//AllowOrigins: []string{"*"},
+		AllowOrigins: []string{"http://react-app-autopro.s3-website.us-east-2.amazonaws.com"},
 		AllowHeaders: []string{
 			echo.HeaderOrigin,
 			echo.HeaderAuthorization,

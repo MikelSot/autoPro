@@ -42,7 +42,7 @@ type EditClient struct {
 	Name     string `json:"name"`
 	LastName string `json:"last_name"`
 	Email    string `json:"email"`
-	Password string `json:"password"`
+	//Password string `json:"password"`
 	Dni      string `json:"dni"`
 	Ruc      string `json:"ruc"`
 	Phone    string `json:"phone"`

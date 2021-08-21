@@ -27,7 +27,6 @@ func connectionDB() {
 	once.Do(func() {
 		var err error
 		dsn := "host=localhost user=mike password=cuUlLyVD9kS4V39qm1tmpU5S4MvWiUiHhU8 dbname=autoprodb port=5432 sslmode=disable TimeZone=America/Lima"
-		//dsn := "host=localhost user=me-postgresql password=cmd.08miguel dbname=autoProdb port=5432 sslmode=disable TimeZone=America/Lima"
 		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err != nil {
 			log.Fatalf("no se pudo conectar a la base de datos --> %v", err)
