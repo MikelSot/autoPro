@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+  auto_pro_db:
+    image: postgres:12.8-alpine
+    container_name: "auto-pro-db-container"
+    restart: always
+    environment:
+      POSTGRES_DB: autoprodb
+      POSTGRES_USER: mike
+      POSTGRES_PASSWORD: cuUlLyVD9kS4V39qm1tmpU5S4MvWiUiHhU8
+    volumes:
+      - auto_pro_data:/var/lib/postgresql/data
+    ports:
+      - "5000:5432"
+volumes:
+  auto_pro_data:
+    driver: local

@@ -33,10 +33,8 @@ func StartServer() {
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		//AllowOrigins: []string{"*"},
-		AllowOrigins: []string{"http://react-app-autopro.s3-website.us-east-2.amazonaws.com"},
+		AllowOrigins: []string{"*"},
 		AllowHeaders: []string{
-			echo.HeaderOrigin,
 			echo.HeaderAuthorization,
 			echo.HeaderContentType,
 			echo.HeaderAccept,
@@ -61,7 +59,7 @@ func StartServer() {
 	Role(e, &role)
 	Service(e, &service)
 
-	err = e.Start(":5000")
+	err = e.Start(":9000")
 	if err != nil {
 		log.Printf("Error en el servidor: %v\n", err)
 	}
